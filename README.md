@@ -1,10 +1,11 @@
 # sla
-Acquisition of Spanish as second language by native english speakers: factors influencing production and acquisition of phonetic and phonological systems
+Acquisition of Spanish as second language by native english speakers: factors influencing production and acquisition of phonetic and phonological systems.
 Paper originally writen for Spanish Second Language Aquisiton: Theory & Method course at The University of Colorado, Denver, taught by Dra. Alyssa Martoccio.
 # La adquisición de las vocales en español por anglo-hablantes nativos: El papel de las experiencias, la edad, y otros factores
 #### Por David J DeBonis
 
 ## El Repaso de la Literatura
+
 ### El estado del campo
 
 La adquisición de las fonemas y los alófonos por los hablantes anglo-nativos (adelante los NES, por “native English speakers”) es una tema que ha estado estudiado exhaustivamente, especialmente en los años recientes. Sin embargo, todavía hay muchas brechas en la investigación. 
@@ -20,3 +21,14 @@ Solon (2016) encontró que había diferencias significadas en el exactitud del p
 ### Los factores individuales
 
 Muchos estudios también han examinado los factores--especialmentes los de la experiencia--que afectan la pronunciación de español como un L2 para los NES. Shea y Curtin (2011) encontraron que había diferencias distintivas en la producción de las alófonos entre niveles Low-Intermediate y Intermediate-High, que estaban designado por tiempo pasado en el clase (~67 & ~135 horas, respectivamente). Notaron que un etapa vital en la adquisición de un sistema fonético y fonológico es para darse en cuenta que hay diferencias entre los sistema de la L1 y la L2, y que este proceso puede pasa implícitamente o explícitamente (p. 243). Es claro que, lo más que tiempo que pasa un estudiante en el proceso del aprendizaje, lo más que él/ella vaya comprender las diferencias--no se importa si el/ella se da en cuenta en su propio por bastante input, por su reflexión, o si una persona le explica explícitamente. 
+
+## Los métodos
+
+### El desarrollo de los materiales
+
+Una lista de palabras españolas estuvo construida con un énfasis en las vocales; una combinación de 25 palabras que son cognados y palabras que no son cognados estaban elegidas, con enfoque en las vocales. Las palabras estaban organizadas en tres grupos binarios, y asignadas con ‘1’ para “cierto” y ‘0’ para “falso”: (1) cognado; (2) vocal inicial; y (3) vocal terminal. En la lista, había 6 cognados, 13 palabras con vocales iniciales, y 16 palabras con vocales terminales. Unas de las palabras estaban asignadas a dos o más grupos. Todas las palabras también recibieron otras asignaciones: (1) la vocal de énfasis primera, y (2) la vocal de énfasis segunda; cada palabra recibió un código para (1), pero no necesariamente para (2). Las asignaciones de las palabras de fueron divididas en 7 categorías que determinaron cuál fue la vocal--o el ambiente fonológico--del enfoque en esa palabra específica:  < a > , < e > , < i >, < o >, < u >, <h-vocal>, y <qu-vocal>. Las palabras estuvieron organizados al azar por C++ para escribir la lista. 
+  
+### Los participantes
+Para este estudio, 7 participantes estaban seleccionados por un ‘snowball sample’ (i.e. no había nada randomización--todos los voluntarios estuvieron elegidos.  Todos los participantes completaron una cuestionario que les preguntó de sus experiencias con español (Appendix A). Después, todos eligieron un otro correo que les dio la lista de las palabras y las instrucciones para la grabación (Appendix B). Los participantes contestaron el correo con su grabación. Todos los participantes no fueron hablantes-nativos- ni -de herencia en español. Nada de los participantes habían viajado a un país hispanohablante con el propósito educacional, y nada de los participantes habían recibido el input español antes del edad 10. 
+
+
