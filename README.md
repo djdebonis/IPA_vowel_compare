@@ -14,9 +14,6 @@ Participants were asked to record themselves reading a list of 25 Spanish words.
 
 
 
-
-
-
 ## El Repaso de la Literatura
 
 ### El estado del campo
