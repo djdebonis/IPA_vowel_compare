@@ -1,4 +1,7 @@
 # sla
+Jupyter notebook running python code for comparative analysis of IPA transcriptions.
+The emphasis of this notebook (and the study that accompanies it) is vowel comparrison.
+
 Acquisition of Spanish as second language by native english speakers: factors influencing production and acquisition of phonetic and phonological systems.
 Paper originally writen for Spanish Second Language Aquisiton: Theory & Method course at The University of Colorado, Denver, taught by Dra. Alyssa Martoccio.
 # La adquisición de las vocales en español por anglo-hablantes nativos: El papel de las experiencias, la edad, y otros factores
