@@ -1,5 +1,5 @@
 # sla
-Jupyter notebook running python code for comparative analysis of IPA transcriptions.
+Jupyter notebook running python code for comparative analysis of International Phonetic ALphabet (IPA) transcriptions.
 The emphasis of this notebook (and the study that accompanies it) is vowel comparison.
 
 ## Program & notebook
@@ -44,6 +44,19 @@ In the sample (n = 8), the participants had recieved an average of 3.25 years of
 
 ### Results
 
+As is mentioned, this was a pilot study who's focus was to explore materials, methods, and implications. Few results were drawn.
+
+
 ### Discussion
 
 ### Limitaitons
+
+There were oh-so-many limitations to this study. The first and most prominent limitation is the sample size. It is very difficult--if not completely impossible--to draw conclusions about Spanish language aquisition with a sample size of 8 Spanish L2 learners. However, as was previously noted, this was a pilot study aimed at testing the materials & methods and examining potential analyzes that could be completed in future studies.
+
+The second major limitation was that, for this study, I was the only researcher involved in transcribing the participant recordings into IPA. Although I have a lot of experience transcribing Spanish IPA and comparing my results with other researchers, there is an inherent subejctivity and bias of a single transcriber; problems can arise from both perception of sound and confirmation bias. Future studies should include multiple transcribers in a collaborative setting. (Future research should also examine machine learning of audio files to transcribe to IPA.)
+
+A major limitation of the development of the materials--which was only realized *post hoc*--was the lack of a survey question that asked about other L1s or L2s that are not Spanish. I only realized this after a friend of mine completed the survey who's first language is Italian; speaking another Romance language as an L1 is a clear confounding variable that was not accounted for in this study.
+
+Further, future studies must include more randomization in the sampling. A snowball sample works well enough for the purpose of the pilot study, but if conclusions are to be drawn it is important that there is randomization so that the sample is as representative as possible. 
+
+Finally, this study was a completely correlational study that relied completely on past experiences to draw conclusions about factors influencing pronunciation. Future studies should examine factors relating to phonetic/phonemic aquisition in a controlled study. An example of this might be to examine the effect of explicit, contrastive instruction of phonetics compared against an implicit, audio-lingual repetition control, where both the explicit and implicit groups have exposure to similar quantities of target tokens.
