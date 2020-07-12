@@ -469,11 +469,12 @@ def extract_from_dictionary(ls_of_dictionaries, key_name):
     """
     
     #index = []
-    #partic = []
+    partic_name = []
     data_element = []
     
     for index, dictionary in enumerate(ls_of_dictionaries):
             data = dictionary[key_name]
+            partic_name = dictionary['partic_number']
             data_element.append(data)
             
     return(data_element)
