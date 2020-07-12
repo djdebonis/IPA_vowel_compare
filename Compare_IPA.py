@@ -132,9 +132,11 @@ def bring_in_data(ls_of_file_paths):
         
         temp_partic = rm_stress(temp_raw)
         
-        dictionary["import_index"] = index
+        dictionary['import_index'] = index
         
-        dictionary["clean_transcript"] = temp_partic
+        dictionary['raw_transcript'] = temp_string
+        
+        dictionary['clean_transcript'] = temp_partic
         
         
         ls_of_dictionaries.append(dictionary)
