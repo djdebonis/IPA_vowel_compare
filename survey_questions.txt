@@ -1,0 +1,13 @@
+"What is your name?",
+"What is your age?",
+"How would you self-identify in terms of your Spanish language ability?",
+"Have you ever traveled to a Spanish-speaking country, and, if so, did you communicate in Spanish while in that Spanish-speaking country?",
+"Have you ever traveled to a Spanish-speaking country on an education-focused travel-abroad program?",
+"Did you have any significant exposure to Spanish before the age of 10? (significant could mean: a family member spoke to you; you lived in a Spanish-speaking country; you took a Spanish class; etc.)",
+"Have you ever received formal Spanish language instruction?",
+"If you have you received formal Spanish language instruction, approximately how many years? (Assume each college semester = 1 year; each High School course = 1 year) If not, please enter '0'.",
+"If you have you ever received formal Spanish language instruction, have you every been explicitly taught Spanish pronunciation?",
+"How often do you have exposure to Spanish (outside of a classroom setting)?",
+"How often do you speak in Spanish (outside of a classroom setting)?",
+"When was the last time you spoke Spanish (outside of a classroom setting)?",
+"Are you currently trying to learn Spanish?"
