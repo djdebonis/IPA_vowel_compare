@@ -344,15 +344,19 @@ def filter_by_dictionary(dictionary_df, column_criteria, equivelancy_criteria, l
     
     Parameters
     ----------
-    :dictionary_df: a pandas DataFrame with information relating to how you might want to filter the df
-    :column_criteria: a string that is the column name of what you want to filter by in in dictionary_df
-    :equivelancy_criteria: what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
-    :ls_of_dfs: a list of pandas DataFrames that you want to filter by some criteria
+        dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
+        
+        column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
+        
+        equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
+        
+        ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
     
     Returns
     --------
-    :returns: a list of filtered dataframes
-    :rtype: list of pd DataFrames
+        returns : a list of filtered dataframes
+        
+        rtype : list of pd DataFrames
     
     """
 
