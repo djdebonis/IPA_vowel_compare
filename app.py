@@ -191,12 +191,24 @@ elif data_explore == data_explore_keys[2]:
             return(words)
         
         terminal_vowels = filter_dict(word_data, 'term_vowel', 1)
+        terminal_vowel_prop = len(terminal_vowels) / word_size
         
         init_vowels = filter_dict(word_data, 'init_vowel', 1)
-        
+        init_vowels_prop = len(init_vowels) / word_size
         cognates = filter_dict(word_data, 'cognate', 1)
         
+        ls_types = ['initial letter', 'terminal letter', 'cognate status', 'initial letter', 'terminal letter', 'cognate status']
         
+        
+        alt.Chart(word_data).mark_text(filled=True).encode(
+            alt.X('term_vowel:O', axis=None),
+            alt.Y('animal:O', axis=None),
+            alt.Row('country:N', header=alt.Header(title='')),
+            alt.SizeValue(60),
+            text='emoji'
+        ).properties(width=800, height=200)
+        
+        # https://vega.github.io/vega-lite/examples/isotype_bar_chart_emoji.html
         
         
     elif descriptive_stats_choice == descriptive_stats_options[3]:
