@@ -1,8 +1,9 @@
 # IPA_vowel_compare
-Jupyter notebook running Python code for comparative analysis of International Phonetic Alphabet (IPA) transcriptions. Repository also includes a Streamlit web application (both are currently in-progress).
-The emphasis of this notebook (and the study that accompanies it) is vowel comparison.
+> Jupyter notebook & streamlit app running Python code for comparative analysis of International Phonetic Alphabet (IPA) strings. Repository also includes data and research from a Spanish phonetic acquisition project currently underway.
 
 ## Repository
+
+
 
 The intention of the notebook is to perform contrastive data analysis between prescriptive and descriptive IPA strings. Although the original intention is IPA strings, many of the functions could likely be tweaked and extrapolated to other string comparisons, such as spell checking or DNA sequencing etc. (I really have no clue--like I said the intention was IPA strings.)
 
