@@ -8,6 +8,7 @@ import scipy.stats as stat
 import glob as glob
 import os
 import time
+import altair as alt 
 
 # import local .py scripts with function definitions/declarations
 import Compare_IPA as ipa
@@ -170,33 +171,68 @@ elif data_explore == data_explore_keys[2]:
         study_data.append(df)
         years_instruct.append(years)
         
-    st.write("temp")
     
     word_data = pd.read_csv("dictionary.csv")
     
-    # write information on total dataset
-    total_accuracy = ipa.get_proportions(study_data)
-    total_accuracy_mean = np.mean(total_accuracy)
-    total_accuracy_std = np.std(total_accuracy)
-    st.write("### All participants")
-    st.write("Across all of the sample, the particpants scored an average of " + str(round((total_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((total_accuracy_std * 100), 2)) + "%")
-    # time.sleep()
     
-    # write information on cognates
-    non_cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 0, study_data)
-    non_cognate_accuracy = ipa.get_proportions(non_cognate_dfs)
-    non_cognate_accuracy_mean = np.mean(non_cognate_accuracy)
-    non_cognate_accuracy_std = np.std(non_cognate_accuracy)
-    st.write("For non-cognates words, the particpants scored an average of " + str(round((non_cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((non_cognate_accuracy_std * 100), 2)) + "%")
+    descriptive_stats_options = ["Nothing","The wordlist", "Survey results", "Pronunciation outcomes"]
     
-# calculate mean and std for cognate pronunciation accuracy across the *entrie* sample
-    cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 1, study_data) # create a list of dfs that only accounts for the cognates in the study
-    cognate_accuracy = ipa.get_proportions(cognate_dfs)
-    cognate_accuracy_mean = np.mean(cognate_accuracy)
-    cognate_accuracy_std = np.std(cognate_accuracy)
-    st.write("For cognates, the particpants scored an average of " + str(round((cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((cognate_accuracy_std * 100), 2)) + "%")
+    descriptive_stats_choice = st.selectbox("Chose what stats you would like to explore", descriptive_stats_options)
     
-
+    if descriptive_stats_choice == descriptive_stats_options[1]:
+        st.write(word_data.keys())
+        
+        words = word_data['word']
+        word_size = len(words)
+        
+        def filter_dict(dictionary_df, column_criteria, equivelancy_criteria):
+            row_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
+            words = row_selects['word']
+            return(words)
+        
+        terminal_vowels = filter_dict(word_data, 'term_vowel', 1)
+        
+        init_vowels = filter_dict(word_data, 'init_vowel', 1)
+        
+        cognates = filter_dict(word_data, 'cognate', 1)
+        
+        
+        
+        
+    elif descriptive_stats_choice == descriptive_stats_options[3]:
+        # write information on total dataset
+        total_accuracy = ipa.get_proportions(study_data)
+        total_accuracy_mean = np.mean(total_accuracy)
+        total_accuracy_std = np.std(total_accuracy)
+        st.write("### All participants")
+        st.write("Across all of the sample, the particpants scored an average of " + str(round((total_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((total_accuracy_std * 100), 2)) + "%")
+        # time.sleep()
+        
+        # write information on cognates
+        non_cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 0, study_data)
+        non_cognate_accuracy = ipa.get_proportions(non_cognate_dfs)
+        non_cognate_accuracy_mean = np.mean(non_cognate_accuracy)
+        non_cognate_accuracy_std = np.std(non_cognate_accuracy)
+        st.write("For non-cognates words, the particpants scored an average of " + str(round((non_cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((non_cognate_accuracy_std * 100), 2)) + "%")
+        
+    # calculate mean and std for cognate pronunciation accuracy across the *entrie* sample
+        cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 1, study_data) # create a list of dfs that only accounts for the cognates in the study
+        cognate_accuracy = ipa.get_proportions(cognate_dfs)
+        cognate_accuracy_mean = np.mean(cognate_accuracy)
+        cognate_accuracy_std = np.std(cognate_accuracy)
+        st.write("For cognates, the particpants scored an average of " + str(round((cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((cognate_accuracy_std * 100), 2)) + "%")
+        
+    
+        stat = stat.ttest_ind(cognate_accuracy, non_cognate_accuracy, equal_var=False)
+        pvalue = stat[1]
+        
+        st.write("According to a two sample t-test (p < 0.05, equal varience = False):")
+        
+        if pvalue >= 0.05:
+            st.markdown("> We fail to reject the null hypothesis. There is not enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
+        else:
+            st.markdown("> We choose to reject the null hypothesis. There is enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
+        
 
 #st.write("Files in " + desc_folder_path + ": ")
 #for i,e in enumerate(desc_transcript_files):
