@@ -242,6 +242,7 @@ elif data_explore == data_explore_keys[2]:
             st.markdown("> We choose to reject the null hypothesis. There is enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
 
 
+
         newito = ipa.filter_by_allophone(study_data, allophone0 = 'a', allophone1 = 'e')
         st.write(newito[1])
 
