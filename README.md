@@ -5,10 +5,7 @@
 
 
 
-The intention of the notebook is to perform contrastive data analysis between prescriptive and descriptive IPA strings. Although the original intention is IPA strings, many of the functions could likely be tweaked and extrapolated to other string comparisons, such as spell checking or DNA sequencing etc. (I really have no clue--like I said the intention was IPA strings.)
-
-Along with the Jupyter notebook, there are also sample datasets in the repository. In the transcriptions/ directory are a set of IPA transcriptions taken from study-participant recordings (in descriptive/ sub) (see **Current Study**) stored in text files. According to IPA guidelines, each word is separated with " # " to denote a pause in the speech. Prosodic accent marks (" ' ") are only attached to syllables (preceding the stressed syllable) in which the participant stressed *the incorrect* syllable. These transcriptions (or others like it) can be read into the notebook, cleaned by the functions, and then set against each other (or, in this case, against a prescriptive, 'correct,' transcription, found in transcriptions/prescriptive) for analysis.
-
+The intention of the notebook is to perform contrastive data analysis between prescriptive and descriptive IPA strings. In short, the prescriptive strings are what 'should be' said by fluent speakers of the language, whereas descriptive strings are what are actually said (in this case by English speakers learning the language).
 There are also two .csv files: dictionary.csv, and survey_data.csv. The former contains meta-information about the word-list sample and its linguistic properties, while the latter has responses to the survey that participants took before recording their pronunciation. Note that some of the functions are designed specifically for these datasets.
 
 ### Notebook
