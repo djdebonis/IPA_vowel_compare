@@ -172,7 +172,7 @@ elif data_explore == data_explore_keys[1]: # view particpant data
             st.write("## Total Results")
             st.write("### Filter results by:")
             
-            st.write("**Allophone criteria:**")
+            st.write("**Phoneme criteria:**")
             dict = dictionary['DF']
             trick_ls = [dict]
             
@@ -207,7 +207,6 @@ elif data_explore == data_explore_keys[1]: # view particpant data
 
             filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
             allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-            st.write(filtered_by_allophone[0])
             
             st.write("**Dictionary criteria:**")
             
@@ -234,11 +233,35 @@ elif data_explore == data_explore_keys[1]: # view particpant data
             else:
                 column_criteria2 = ''
                 equivelancy_criteria2 = ''
+            non_term_vowel_bool = st.checkbox("Non-terminal vowels")
             
+            if non_term_vowel_bool:
+                column_criteria3 = 'term_vowel'
+                equivelancy_criteria3 = '0'
+            else:
+                column_criteria3 = ''
+                equivelancy_criteria3 = ''
+                
+            init_vowel_bool = st.checkbox("Vowel initial")
+            if init_vowel_bool:
+                column_criteria4 = 'term_vowel'
+                equivelancy_criteria4 = '1'
+            else:
+                column_criteria4 = ''
+                equivelancy_criteria4 = ''
+                
+            non_init_vowel_bool = st.checkbox("Non-vowel initial")
+            if init_vowel_bool:
+                column_criteria5 = 'term_vowel'
+                equivelancy_criteria5 = '0'
+            else:
+                column_criteria5 = ''
+                equivelancy_criteria5 = ''
         
-            filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2)
+            filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
+    
             st.write(filtered_by_dict[0])
-
+            st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
             
             
 
@@ -319,38 +342,40 @@ elif data_explore == data_explore_keys[2]:
 
 
 
+        st.write("## Total Results")
+        st.write("**Phoneme criteria:**")
+        dict = dictionary['DF']
+        trick_ls = [dict]
+        
         allophone0_bool = st.checkbox('/a/')
         if allophone0_bool:
             allophone0 = 'a'
         else:
             allophone0 = ''
-
         allophone1_bool = st.checkbox('/e/')
         if allophone1_bool:
             allophone1 = 'e'
+        else:
             allophone1 = ''
-
         allophone2_bool = st.checkbox('/i/')
         if allophone2_bool:
             allophone2 = 'i'
         else:
             allophone2 = ''
-
         allophone3_bool = st.checkbox('/o/')
         if allophone3_bool:
             allophone3 = 'o'
         else:
             allophone3 = ''
-
         allophone4_bool = st.checkbox('/u/')
         if allophone4_bool:
             allophone4 = 'u'
         else:
             allophone4 = ''
-
-        filtered_by_allophone = ipa.filter_by_allophone(study_data, allophone0 = allophone0, allophone1 = allophone1, allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-        st.write(filtered_by_allophone[0])
+        filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
+        allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
         
+        st.write("**Dictionary criteria:**")
         
         cognate_bool = st.checkbox('Cognates')
         if cognate_bool:
@@ -359,26 +384,53 @@ elif data_explore == data_explore_keys[2]:
         else:
             column_criteria0 = ''
             equivelancy_criteria0 = ''
-            
+        
         noncognate_bool = st.checkbox('Non-cognates')
         if noncognate_bool:
-            column_criteria1 = 'cognate'
+            column_criteria1 = ''
             equivelancy_criteria1 = '0'
         else:
             column_criteria1 = ''
             equivelancy_criteria1 = ''
-            
+        
         term_vowel_bool = st.checkbox('Terminal vowels')
         if term_vowel_bool:
-            column_criteria2 = 'cognate'
+            column_criteria2 = 'term_vowel'
             equivelancy_criteria2 = '1'
         else:
             column_criteria2 = ''
             equivelancy_criteria2 = ''
             
+        non_term_vowel_bool = st.checkbox("Non-terminal vowels")
+        if non_term_vowel_bool:
+            column_criteria3 = 'term_vowel'
+            equivelancy_criteria3 = '0'
+        else:
+            column_criteria3 = ''
+            equivelancy_criteria3 = ''
+            
+        init_vowel_bool = st.checkbox("Vowel initial")
+        if init_vowel_bool:
+            column_criteria4 = 'term_vowel'
+            equivelancy_criteria4 = '1'
+        else:
+            column_criteria4 = ''
+            equivelancy_criteria4 = ''
+            
+        non_init_vowel_bool = st.checkbox("Non-vowel initial")
+        if init_vowel_bool:
+            column_criteria5 = 'term_vowel'
+            equivelancy_criteria5 = '0'
+        else:
+            column_criteria5 = ''
+            equivelancy_criteria5 = ''
+    
+        filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
         
-        filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filter_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2)
+
         st.write(filtered_by_dict[0])
+        st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
+            
 
 #st.write("Files in " + desc_folder_path + ": ")
 #for i,e in enumerate(desc_transcript_files):
