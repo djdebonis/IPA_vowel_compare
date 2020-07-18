@@ -29,5 +29,27 @@ The streamlit app was designed for users to explore data (and the relationships 
 
 The study that accompanies the code in this repo was conducted as a final project for Spanish Applied Linguistics: Second Language Acquisition, a course @ The University of Colorado, Denver, taught by my professor & research advisor, Dr. Alyssa Martoccio. Read more about the study [here](README_ext/study.md).
 
+## Installation
+
+```bash
+git clone https://github.com/djdebonis/IPA_vowel_compare
+cd IPA_vowel_compare
+pip install .
+```
+
+## Usage
+
+### Streamlit web app
+```bash
+streamlit run app.py
+```
+
+### Notebook
+```bash
+cd IPA_vowel_compare
+jupyter lab
+```
+
+
 
 
