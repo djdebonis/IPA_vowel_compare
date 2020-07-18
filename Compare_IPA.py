@@ -371,6 +371,47 @@ def filter_by_dictionary(dictionary_df, column_criteria, equivelancy_criteria, l
 
     return(new_ls_of_dfs)
 
+def filter_by_dictionary_mult_criteria(dictionary_df, ls_of_dfs, column_criteria0 = '', equivelancy_criteria0 = '', column_criteria1 = '', equivelancy_criteria1 = '', column_criteria2 = '', equivelancy_criteria2 = '', column_criteria3 = '', equivelancy_criteria3 = '', column_criteria4 = '', equivelancy_criteria4 = '', column_criteria5 = '', equivelancy_criteria5 = ''):
+    """
+    Uses the categorical/meta information from one dataframe (in this case, the dictionary dataframe), and uses some criteria
+    within it to filter another dataframe.
+
+    Parameters
+    ----------
+        dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
+
+        column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
+
+        equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
+
+        ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
+
+    Returns
+    --------
+        returns : a list of filtered dataframes
+
+        rtype : list of pd DataFrames
+
+    """
+
+   # Filter the dictionary by the criteria passed as arguments
+
+    dictionary_df0 = dictionary_df[dictionary_df[column_criteria0] == equivelancy_criteria0]
+    dictionary_df1 = dictionary_df[dictionary_df[column_criteria1] == equivelancy_criteria1]
+    dictionary_df2 = dictionary_df[dictionary_df[column_criteria2] == equivelancy_criteria2]
+    dictionary_df3 = dictionary_df[dictionary_df[column_criteria3] == equivelancy_criteria3]
+    dictionary_df4 = dictionary_df[dictionary_df[column_criteria4] == equivelancy_criteria4]
+    dictionary_df5 = dictionary_df[dictionary_df[column_criteria5] == equivelancy_criteria5]
+    
+    dictionary_ls_dfs = [dictionary_df0, dictionary_df1, dictionary_df2, dictionary_df3, dictionary_df4, dictionary_df5]
+    new_dictionary_df = pd.concat(dictionary_ls_dfs)
+
+    for i in range(len(ls_of_dfs)):
+        temp_df = ls_of_dfs[i]
+        temp_df = temp_df[temp_df['word_number'].isin(word_selects['list_number'])]
+        new_ls_of_dfs.append(temp_df)
+
+    return(new_ls_of_dfs)
 
 def filter_by_allophone(ls_of_dfs, allophone0  = '', allophone1 = '', allophone2 = '', allophone3 = '', allophone4 = '', allophone5 = ''):
     """
@@ -378,7 +419,7 @@ def filter_by_allophone(ls_of_dfs, allophone0  = '', allophone1 = '', allophone2
 
     Parameters
     ----------
-    :allophone: the allophone that you want to focus on, e.g. 'a', 'e', etc.
+    :allophone[x]: the allophone that you want to focus on, e.g. 'a', 'e', etc.
     :ls_of_dfs: a list of pandas DataFrames that you want to filter by some criteria
 
     Returns
@@ -433,7 +474,8 @@ def descriptive_stats(ls_of_dfs, allophone):
     """
 
 
-    new_ls_dfs = filter_by_allophone(ls_of_dfs, allophone)
+    new_ls_dfs = filter_by_allophone(ls_of_dfs, allophone0 = allophone) # because filter_by_allophone changed, there will have to be some corresponding changes
+    # to make sure everything else still runs smoothly
     allophone_frequency = len(new_ls_dfs[0])
 
     print("In this word list, the allophone [" + allophone + "] occured in " + str(allophone_frequency) + " syllables.")
