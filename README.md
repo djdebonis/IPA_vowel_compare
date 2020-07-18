@@ -5,7 +5,13 @@
 
 The intention of this repo is to perform contrastive data analysis between prescriptive and descriptive IPA strings. (Don't know anything about IPA? Learn more [here](README_ext/IPA.md).) 
 
-There are also two .csv files in the root directory: dictionary.csv, and survey_data.csv. The former contains meta-information about the word-list sample and its linguistic properties, while the latter has responses to the survey that participants took before recording their pronunciation. Note that many the functions are designed specifically for these datasets.
+### Data
+
+I have made all of the data I collected for this study open-source. 
+
+The bulk of the data collected is in the [transcriptions/descriptive/](/transcriptions/descriptive/) folder. Here there are a number of files named particX.txt; each doc contains a long string of the participant's recording (their pronunciation of the [wordlist](wordlist.txt)) transcribed into IPA. I did all of the transcriptions using the [fantastic open-source 'keyboard' that my research group and I use](https://ipa.typeit.org/full/)
+
+There are also two .csv files in the root directory: [dictionary.csv](dictionary.csv), and [survey_data.csv](survey_data.csv). The former contains meta-information about the word-list sample and its linguistic properties, while the latter has responses to the survey that participants took before recording their pronunciation. Note that many the functions are designed specifically for these datasets.
 
 ### Notebook
 
@@ -21,5 +27,7 @@ The streamlit app was designed for users to explore data (and the relationships 
 
 ## Study
 
-The study that accompanies the code in this repo was conducted as a final project for Spanish Applied Linguistics: Second Language Acquisition, a course @ The University of Colorado, Denver, taught by my professor & research advisor, Dr. Alyssa Martoccio. Read more about the study [here](README_ext/study.md)
+The study that accompanies the code in this repo was conducted as a final project for Spanish Applied Linguistics: Second Language Acquisition, a course @ The University of Colorado, Denver, taught by my professor & research advisor, Dr. Alyssa Martoccio. Read more about the study [here](README_ext/study.md).
+
+
 
