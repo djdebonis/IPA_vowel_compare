@@ -1,0 +1,1 @@
+In short, the prescriptive strings are what 'should be' said by fluent speakers of the language, whereas descriptive strings are what are actually said (in this case by English speakers learning the language).
