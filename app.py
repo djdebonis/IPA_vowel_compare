@@ -243,7 +243,37 @@ elif data_explore == data_explore_keys[2]:
 
 
 
-        newito = ipa.filter_by_allophone(study_data, allophone0 = 'a', allophone1 = 'e')
+        
+        allophone0_bool = st.checkbox('/a/')
+        if allophone0:
+            allophone0 = 'a'
+        else:
+            allophone0 = ''
+            
+        allophone1_bool = st.checkbox('/e/')
+        if allophone1:
+            allophone1 = 'e'
+            allophone1 = ''
+            
+        allophone2_bool = st.checkbox('/i/')
+        if allophone2:
+            allophone2 = 'i'
+        else:
+            allophone2 = ''
+            
+        allophone3_bool = st.checkbox('/o/')
+        if allophone3:
+            allophone3 = 'o'
+        else:
+            allophone3 = ''
+            
+        allophone4_bool = st.checkbox('/u/')
+        if allophone4:
+            allophone4 = 'u'
+        else:
+            allophone4 = ''
+        
+        newito = ipa.filter_by_allophone(study_data, allophone0 = allophone0, allophone1 = 'e')
         st.write(newito[1])
 
 #st.write("Files in " + desc_folder_path + ": ")
