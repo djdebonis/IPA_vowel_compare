@@ -205,11 +205,40 @@ elif data_explore == data_explore_keys[1]: # view particpant data
             else:
                 allophone4 = ''
 
-            newito = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
+            filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
             allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-            st.write(newito[0])
+            st.write(filtered_by_allophone[0])
             
-            st.write("**Dictionary criteria:")
+            st.write("**Dictionary criteria:**")
+            
+            cognate_bool = st.checkbox('Cognates')
+            if cognate_bool:
+                column_criteria0 = 'cognate'
+                equivelancy_criteria0 = '1'
+            else:
+                column_criteria0 = ''
+                equivelancy_criteria0 = ''
+            
+            noncognate_bool = st.checkbox('Non-cognates')
+            if noncognate_bool:
+                column_criteria1 = ''
+                equivelancy_criteria1 = '0'
+            else:
+                column_criteria1 = ''
+                equivelancy_criteria1 = ''
+            
+            term_vowel_bool = st.checkbox('Terminal vowels')
+            if term_vowel_bool:
+                column_criteria2 = 'term_vowel'
+                equivelancy_criteria2 = '1'
+            else:
+                column_criteria2 = ''
+                equivelancy_criteria2 = ''
+            
+        
+            filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2)
+            st.write(filtered_by_dict[0])
+
             
             
 

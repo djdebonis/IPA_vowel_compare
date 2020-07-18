@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stat
 import os
+import streamlit as st
 
 def open_and_read(infile_path_and_name):
     """
@@ -396,19 +397,39 @@ def filter_by_dictionary_mult_criteria(dictionary_df, ls_of_dfs, column_criteria
 
    # Filter the dictionary by the criteria passed as arguments
 
-    dictionary_df0 = dictionary_df[dictionary_df[column_criteria0] == equivelancy_criteria0]
-    dictionary_df1 = dictionary_df[dictionary_df[column_criteria1] == equivelancy_criteria1]
-    dictionary_df2 = dictionary_df[dictionary_df[column_criteria2] == equivelancy_criteria2]
-    dictionary_df3 = dictionary_df[dictionary_df[column_criteria3] == equivelancy_criteria3]
-    dictionary_df4 = dictionary_df[dictionary_df[column_criteria4] == equivelancy_criteria4]
-    dictionary_df5 = dictionary_df[dictionary_df[column_criteria5] == equivelancy_criteria5]
+    dictionary_ls_dfs = []
+    if len(column_criteria0) > 0:
+        dictionary_df0 = dictionary_df[dictionary_df[column_criteria0] == int(equivelancy_criteria0)]
+        dictionary_ls_dfs.append(dictionary_df0)
+        
+    if len(column_criteria1) > 0:
+        dictionary_df1 = dictionary_df[dictionary_df[column_criteria1] == int(equivelancy_criteria1)]
+        dictionary_ls_dfs.append(dictionary_df1)
+        
+    if len(column_criteria2) > 0:
+        dictionary_df2 = dictionary_df[dictionary_df[column_criteria2] == int(equivelancy_criteria2)]
+        dictionary_ls_dfs.append(dictionary_df2)
+        
+    if len(column_criteria3) > 0:
+        dictionary_df3 = dictionary_df[dictionary_df[column_criteria3] == int(equivelancy_criteria3)]
+        dictionary_ls_dfs.append(dictionary_df3)
+        
+    if len(column_criteria4) > 0:
+        dictionary_df4 = dictionary_df[dictionary_df[column_criteria4] == int(equivelancy_criteria4)]
+        dictionary_ls_dfs.append(dictionary_df4)
+        
+    if len(column_criteria5) > 0:
+        dictionary_df5 = dictionary_df[dictionary_df[column_criteria5] == int(equivelancy_criteria5)]
+        dictionary_ls_dfs.append(dictionary_df5)
     
-    dictionary_ls_dfs = [dictionary_df0, dictionary_df1, dictionary_df2, dictionary_df3, dictionary_df4, dictionary_df5]
+
     new_dictionary_df = pd.concat(dictionary_ls_dfs)
 
+    
+    new_ls_of_dfs =[]
     for i in range(len(ls_of_dfs)):
         temp_df = ls_of_dfs[i]
-        temp_df = temp_df[temp_df['word_number'].isin(word_selects['list_number'])]
+        temp_df = temp_df[temp_df['prescriptive_pronunciation'].isin(new_dictionary_df['transcription'])]
         new_ls_of_dfs.append(temp_df)
 
     return(new_ls_of_dfs)
