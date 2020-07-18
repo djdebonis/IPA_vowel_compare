@@ -168,6 +168,52 @@ elif data_explore == data_explore_keys[1]: # view particpant data
             partic_survey_results = pd.DataFrame(zip(question_keys, questions, question_answers), columns = ['question_key', 'questions', 'answer'])
             st.table(partic_survey_results)
 
+            
+            st.write("## Total Results")
+            st.write("### Filter results by:")
+            
+            st.write("**Allophone criteria:**")
+            dict = dictionary['DF']
+            trick_ls = [dict]
+            
+            allophone0_bool = st.checkbox('/a/')
+            if allophone0_bool:
+                allophone0 = 'a'
+            else:
+                allophone0 = ''
+            allophone1_bool = st.checkbox('/e/')
+            if allophone1_bool:
+                allophone1 = 'e'
+            else:
+                allophone1 = ''
+
+            allophone2_bool = st.checkbox('/i/')
+            if allophone2_bool:
+                allophone2 = 'i'
+            else:
+                allophone2 = ''
+
+            allophone3_bool = st.checkbox('/o/')
+            if allophone3_bool:
+                allophone3 = 'o'
+            else:
+                allophone3 = ''
+
+            allophone4_bool = st.checkbox('/u/')
+            if allophone4_bool:
+                allophone4 = 'u'
+            else:
+                allophone4 = ''
+
+            newito = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
+            allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
+            st.write(newito[0])
+            
+            st.write("**Dictionary criteria:")
+            
+            
+
+
 elif data_explore == data_explore_keys[2]:
 
 
@@ -243,38 +289,67 @@ elif data_explore == data_explore_keys[2]:
 
 
 
-        
+
         allophone0_bool = st.checkbox('/a/')
-        if allophone0:
+        if allophone0_bool:
             allophone0 = 'a'
         else:
             allophone0 = ''
-            
+
         allophone1_bool = st.checkbox('/e/')
-        if allophone1:
+        if allophone1_bool:
             allophone1 = 'e'
             allophone1 = ''
-            
+
         allophone2_bool = st.checkbox('/i/')
-        if allophone2:
+        if allophone2_bool:
             allophone2 = 'i'
         else:
             allophone2 = ''
-            
+
         allophone3_bool = st.checkbox('/o/')
-        if allophone3:
+        if allophone3_bool:
             allophone3 = 'o'
         else:
             allophone3 = ''
-            
+
         allophone4_bool = st.checkbox('/u/')
-        if allophone4:
+        if allophone4_bool:
             allophone4 = 'u'
         else:
             allophone4 = ''
+
+        filtered_by_allophone = ipa.filter_by_allophone(study_data, allophone0 = allophone0, allophone1 = allophone1, allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
+        st.write(filtered_by_allophone[0])
         
-        newito = ipa.filter_by_allophone(study_data, allophone0 = allophone0, allophone1 = 'e')
-        st.write(newito[1])
+        
+        cognate_bool = st.checkbox('Cognates')
+        if cognate_bool:
+            column_criteria0 = 'cognate'
+            equivelancy_criteria0 = '1'
+        else:
+            column_criteria0 = ''
+            equivelancy_criteria0 = ''
+            
+        noncognate_bool = st.checkbox('Non-cognates')
+        if noncognate_bool:
+            column_criteria1 = 'cognate'
+            equivelancy_criteria1 = '0'
+        else:
+            column_criteria1 = ''
+            equivelancy_criteria1 = ''
+            
+        term_vowel_bool = st.checkbox('Terminal vowels')
+        if term_vowel_bool:
+            column_criteria2 = 'cognate'
+            equivelancy_criteria2 = '1'
+        else:
+            column_criteria2 = ''
+            equivelancy_criteria2 = ''
+            
+        
+        filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filter_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2)
+        st.write(filtered_by_dict[0])
 
 #st.write("Files in " + desc_folder_path + ": ")
 #for i,e in enumerate(desc_transcript_files):
