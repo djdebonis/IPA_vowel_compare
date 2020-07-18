@@ -45,11 +45,19 @@ streamlit run app.py
 ```
 
 ### Notebook
+Editing and interacting with the notebook requires Jupyter. I personally use Jupyter Lab. For installation options, [view their docs](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html)
 ```bash
-cd IPA_vowel_compare
 jupyter lab
 ```
+or
+```bash
+jupyter notebook
+```
 
+## Credit
+Dr. Alyssa Martoccio, my professor and research advisor @ CU Denver, taught me most of what I know about the International Phonetic Alphabet (IPA), second language acquisition (SLA), and phonetics in general.
+
+[@mathematicalmichael](https://github.com/mathematicalmichael) helped me write a lot of data-cleaning functions when I was still early in learning Python. He also introduced me to Streamlit & taught me a lot about Python and computation in general. 
 
 
 
