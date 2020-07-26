@@ -3,6 +3,7 @@
 
 ## Table of contents
 [IPA_vowel_compare](#ipa_vowel_compare)
+- [Table of contents](#table-of-contents)
 - [Repository](#repository)
 	* [Data](#data)
 	* [Notebook](#notebook)
