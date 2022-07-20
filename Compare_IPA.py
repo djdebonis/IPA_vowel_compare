@@ -11,7 +11,15 @@ def open_and_read(infile_path_and_name):
     """
     opens a file and returns a long long long string
 
-    :infile_path_and_name: string of the path/path/txtFileName.txt from the current directory
+    Parameters
+    ----------
+    infile_path_and_name : str
+        string of the path/path/txtFileName.txt from the current directory
+        
+    Returns
+    -------
+    string : str
+        string of the data within the designated file
 
     """
     path = infile_path_and_name
@@ -24,12 +32,19 @@ def open_and_read(infile_path_and_name):
 def split_sentence(sentence: str) -> list:
     """
     Takes a sentence in IPA and parses it to individual words by breaking according to
-    the " # " IPA string pattern.
+    the " # " IPA string pattern, meaning in the import file each word should be
+    seperated by " # ".
 
-    :sentence: sentence to parse
+    Parameters
+    ----------
+    sentence : str
+        a sentence or list of words to parse
 
-    :returns: list of individual words
-    :rtype: list
+    Returns
+    -------
+    words : list of str
+        a list of individual words/transcriptions
+    
 
     """
     words = sentence.split(" # ")
