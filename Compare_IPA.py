@@ -15,12 +15,11 @@ class Partic:
 
     Attributes
     ----------
-    name : str
-        first name of the person
-    surname : str
-        family name of the person
-    age : int
-        age of the person
+    id : int
+        unique identifier for participant
+    dictionary : dict
+        stores data of the participant's pronunciation transcription
+    
 
     Methods
     -------
@@ -43,7 +42,7 @@ class Partic:
         """
 
         self.id = _partic_ID
-        self.
+        self.dictionary = bring_in_data(_filename)
 
     def open_and_read(infile_path_and_name):
         """
@@ -148,6 +147,7 @@ class Partic:
         furthest_dir_index = 0
         extention_index = 0
 
+        # if there are subdirectories
         if "/" in filepath:
             index_ls = []
             for index,char in enumerate(filepath):
@@ -178,20 +178,27 @@ class Partic:
         return(dictionary)
 
 
-    def bring_in_data(ls_of_file_paths):
+    
+    def bring_in_data(file_path):
         """
         Takes in data from the file_paths and sorts its respective information to dictionaries.
         """
-        dictionary = file_finder(file_p
-        temp_string = open_and_read(file_p
-        temp_raw = split_sentence(temp_str
-        temp_partic = rm_stress(temp_
-        dictionary['import_index'] = i
-        dictionary['raw_transcript'] = temp_st
-        dictionary['clean_transcript'] = temp_pa
-        ls_of_dictionaries.append(dictionary)
+        
+        dictionary = file_finder(file_path)
 
-        return(ls_of_dictionaries)
+        temp_string = open_and_read(file_path)
+
+        temp_raw = split_sentence(temp_string)
+
+        temp_partic = rm_stress(temp_raw)
+
+        dictionary['import_index'] = index
+
+        dictionary['raw_transcript'] = temp_string
+
+        dictionary['clean_transcript'] = temp_partic
+
+        return(dictionary)
 
 
     def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
