@@ -15,7 +15,7 @@ class Partic:
 
     Attributes
     ----------
-    id : int
+    id : str
         unique identifier for participant
     dictionary : dict
         stores data of the participant's pronunciation transcription
@@ -27,7 +27,7 @@ class Partic:
         Prints the person's name and age.
     """
 
-    def __init__(self, _partic_ID, _filename):
+    def __init__(self, _filename):
         """
         Constructs all the necessary attributes for the person object.
 
@@ -41,10 +41,12 @@ class Partic:
             
         """
 
-        self.id = _partic_ID
-        self.dictionary = bring_in_data(_filename)
+        
+        self.dictionary = self.bring_in_data(_filename)
+        self.file_info = self.file_finder(_filename)
+        self.id = self.file_info["file_name"]
 
-    def open_and_read(infile_path_and_name):
+    def open_and_read(self, infile_path_and_name):
         """
         opens a file and returns a long long long string
 
@@ -66,7 +68,7 @@ class Partic:
 
         return string
 
-    def split_sentence(sentence: str) -> list:
+    def split_sentence(self, sentence: str) -> list:
         """
         Takes a sentence in IPA and parses it to individual words by breaking according to
         the " # " IPA string pattern, meaning in the import file each word should be
@@ -90,7 +92,7 @@ class Partic:
         words = sentence.split(" # ")
         return words
 
-    def rm_stress(word_list):
+    def rm_stress(self, word_list):
         """
         Takes a list of strings in IPA that contain prosodic accent marks and removes
         the dashes to clean the data.
@@ -110,7 +112,7 @@ class Partic:
             new_list.append(new_word)
         return(new_list)
 
-    def syllabize_further(word: str) -> list:
+    def syllabize_further(self, word: str) -> list:
         """
         Takes a string with syllable hyphens and breaks it apart into a list of syllables
 
@@ -124,7 +126,7 @@ class Partic:
         syllables = word.split("-")
         return syllables
 
-    def file_finder(filepath):
+    def file_finder(self, filepath):
         """
         Takes a filepath (str) and exracts: (1) its path, (2) its name, and (3) its extension.
         This metadata is filtered into a dictionary.
@@ -179,20 +181,18 @@ class Partic:
 
 
     
-    def bring_in_data(file_path):
+    def bring_in_data(self, file_path):
         """
         Takes in data from the file_paths and sorts its respective information to dictionaries.
         """
         
-        dictionary = file_finder(file_path)
+        dictionary = self.file_finder(file_path)
 
-        temp_string = open_and_read(file_path)
+        temp_string = self.open_and_read(file_path)
 
-        temp_raw = split_sentence(temp_string)
+        temp_raw = self.split_sentence(temp_string)
 
-        temp_partic = rm_stress(temp_raw)
-
-        dictionary['import_index'] = index
+        temp_partic = self.rm_stress(temp_raw)
 
         dictionary['raw_transcript'] = temp_string
 
