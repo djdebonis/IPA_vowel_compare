@@ -28,23 +28,22 @@ class Partic:
         Prints the person's name and age.
     """
 
-    def __init__(self, name, surname, age):
+    def __init__(self, _partic_ID, _filename):
         """
         Constructs all the necessary attributes for the person object.
 
         Parameters
         ----------
-            name : str
-                first name of the person
-            surname : str
-                family name of the person
-            age : int
-                age of the person
+            _partic_ID : int
+                a unique identifier of the participant (compare with
+                another data set to identify)
+            _filename : str
+                name of path and file where document is stored
+            
         """
 
-        self.name = name
-        self.surname = surname
-        self.age = age
+        self.id = _partic_ID
+        self.
 
     def open_and_read(infile_path_and_name):
         """
@@ -86,6 +85,9 @@ class Partic:
 
 
         """
+        
+        # split by traditional IPA word seperator (in IPA, ## traditionally marks the
+        # end of a sentence
         words = sentence.split(" # ")
         return words
 
@@ -101,6 +103,8 @@ class Partic:
 
         """
         new_list = []
+        # for each word in the word list, search for IPA stress marks ("'")
+        # and remove
         for s in range(len(word_list)):
             word = word_list[s]
             new_word = re.compile(r"'").sub("",word)
@@ -117,6 +121,7 @@ class Partic:
         :rtype: list
 
         """
+        # split
         syllables = word.split("-")
         return syllables
 
@@ -177,24 +182,14 @@ class Partic:
         """
         Takes in data from the file_paths and sorts its respective information to dictionaries.
         """
-        ls_of_dictionaries = []
-        for index, file_path in enumerate(ls_of_file_paths):
-            dictionary = file_finder(file_path)
-
-            temp_string = open_and_read(file_path)
-
-            temp_raw = split_sentence(temp_string)
-
-            temp_partic = rm_stress(temp_raw)
-
-            dictionary['import_index'] = index
-
-            dictionary['raw_transcript'] = temp_string
-
-            dictionary['clean_transcript'] = temp_partic
-
-
-            ls_of_dictionaries.append(dictionary)
+        dictionary = file_finder(file_p
+        temp_string = open_and_read(file_p
+        temp_raw = split_sentence(temp_str
+        temp_partic = rm_stress(temp_
+        dictionary['import_index'] = i
+        dictionary['raw_transcript'] = temp_st
+        dictionary['clean_transcript'] = temp_pa
+        ls_of_dictionaries.append(dictionary)
 
         return(ls_of_dictionaries)
 
@@ -202,7 +197,7 @@ class Partic:
     def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
         """
         Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels
-
+ 
         :prescrip_string: the syllable with the 'correct' vowell
         :descrip_string: the syllable with the student's pronunciation of the vowel
         :prescrip_vowel_ls: the list of all of the 'correct' vowel pronunciations
