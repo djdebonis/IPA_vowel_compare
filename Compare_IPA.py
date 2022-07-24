@@ -162,7 +162,13 @@ def bring_in_data(ls_of_file_paths):
 
 def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
     """
-    Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels
+    Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels.
+    
+    *It's important to note that prescriptive Spanish only contains some diphthongs and some vowels from the below
+    lists. However, Native English Speakers (NES) tend to pronounce Spanish with all sorts of long vowels (ones
+    ending with ':', pure vowels that are not in Spanish (e.g. the schwa, 'ə'), or other diphthongs not seen in 
+    most Native Spanish Speakers (NSS). Thus, although the function below seems to be haphazardly constructed,
+    it is actually set up for the sake of following Spanish Language Acquisition by NES students.
 
     :prescrip_string: the syllable with the 'correct' vowell
     :descrip_string: the syllable with the student's pronunciation of the vowel
@@ -190,6 +196,10 @@ def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descr
     while boolean == True:
         if boolean == True:
             for s in range(len(diphthong_list)):
+                # if the vowel set is a diphthong
+                # have to check diphthongs first because the program
+                # will pull the vowels or semivowels and miss their pairs
+                # if you don't
                 if diphthong_list[s] in prescrip_string:
                     prescrip_vowel_ls.append(diphthong_list[s])
                     boolean = False
@@ -197,7 +207,7 @@ def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descr
                 else:
                     boolean = True
 
-
+            # if it wasn't in the first list
             if boolean == True:
                 for i in range(len(vowel_list)):
                     if vowel_list[i] in prescrip_string:
