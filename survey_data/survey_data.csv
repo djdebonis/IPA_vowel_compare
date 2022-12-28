@@ -1,0 +1,14 @@
+partic_number,age,self_identify,spanish_travel,travel_abroad,heritage_exposure,formal_instruct,years_formal_instruct,explicit_pronunciation,spanish_exposure,spanish_production,last_spanish,learn_spanish
+partic10,20,Intermediate-Advanced,Yes,No,No,Yes,7,Yes,Sometimes,Sometimes,This month,Yes
+partic04,21,Advanced,No,No,No,Yes,7,Yes,,Rarely,This week,No
+partic05,47,Beginner-Intermediate,Yes,No,No,No,0,No,Sometimes,Rarely,This week,Yes
+partic02,28,Beginner-Intermediate,No,No,No,Yes,3,Yes,Sometimes,Almost never,It's been a long time,Yes
+partic03,21,Beginner-Intermediate,Yes,No,No,Yes,3,Yes,Rarely,Sometimes,This week,No
+partic06,27,Beginner,Yes,No,No,Yes,0.02,Yes,Sometimes,Almost never,It's been a long time,No
+partic01,20,Beginner,Yes,No,No,Yes,2,Yes,Almost never,Almost never,It's been a long time,No
+partic07,46,Intermediate,Yes,No,No,Yes,4,Yes,Rarely,Rarely,This year,No
+partic08,19,Advanced,Yes,No,No,Yes,5,Yes,Rarely,Sometimes,This month,Yes
+partic09,17,Beginner-Intermediate,No,No,No,Yes,3,Yes,Rarely,Rarely,This week,Yes
+partic11,27,Beginner,No,No,No,No,0,No,Frequently,Sometimes,Today,Yes
+partic13,22,Fluent,Yes,Yes,No,Yes,12,Yes,Frequently,Sometimes,This week,No
+partic12,21,Intermediate,Yes,Yes,Yes,Yes,7,No,Sometimes,Sometimes,This week,Yes

@@ -17,8 +17,9 @@ class Partic:
     ----------
     id : str
         unique identifier for participant
-    dictionary : dict
+    pronunciation_dictionary : dict
         stores data of the participant's pronunciation transcription
+    
     
 
     Methods
@@ -27,7 +28,7 @@ class Partic:
         Prints the person's name and age.
     """
 
-    def __init__(self, _filename):
+    def __init__(self, _filename, _df):
         """
         Constructs all the necessary attributes for the person object.
 
@@ -42,9 +43,13 @@ class Partic:
         """
 
         
-        self.dictionary = self.bring_in_data(_filename)
+        self.pronunication_dictionary = self.bring_in_data(_filename)
         self.file_info = self.file_finder(_filename)
         self.id = self.file_info["file_name"]
+        self.id_number = self.file_info["partic_num"]
+        print(self.id_number)
+        print(type(self.id_number))
+        self.survey_dictionary = self.survey_results(_df)
 
     def open_and_read(self, infile_path_and_name):
         """
@@ -172,11 +177,24 @@ class Partic:
 
         else:
             file_name = filepath[furthest_dir_index:]
+            
+        partic_num_string = file_name[-2:]
+        partic_num = int(partic_num_string)
+        print(partic_num)
 
 
         dictionary = {"full_path": filepath, "file_name": file_name,
-                      "prefix": prefix, "extention" : file_ext}
+                      "prefix": prefix, "extention" : file_ext,
+                      "partic_num": partic_num}
 
+        return(dictionary)
+    
+    def survey_results(self, df):
+        """
+        """
+        series = df.iloc[self.id_number]
+        dictionary = series.to_dict()
+        
         return(dictionary)
 
 
@@ -216,19 +234,19 @@ class Partic:
         :descrip_string: the syllable with the student's pronunciation of the vowel
         :prescrip_vowel_ls: the list of all of the 'correct' vowel pronunciations
         :descrip_vowel_ls: the list with all of the student's pronunciations of the vowels
+        <<<<<<< HEAD
+        ======="""
+        
+    def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
+        """
+        Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels.
 
-<<<<<<< HEAD
-=======
-def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
-    """
-    Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels.
-    
-    *It's important to note that prescriptive Spanish only contains some diphthongs and some vowels from the below
-    lists. However, Native English Speakers (NES) tend to pronounce Spanish with all sorts of long vowels (ones
-    ending with ':', pure vowels that are not in Spanish (e.g. the schwa, 'ə'), or other diphthongs not seen in 
-    most Native Spanish Speakers (NSS). Thus, although the function below seems to be haphazardly constructed,
-    it is actually set up for the sake of following Spanish Language Acquisition by NES students.*
->>>>>>> master
+        *It's important to note that prescriptive Spanish only contains some diphthongs and some vowels from the below
+        lists. However, Native English Speakers (NES) tend to pronounce Spanish with all sorts of long vowels (ones
+        ending with ':', pure vowels that are not in Spanish (e.g. the schwa, 'ə'), or other diphthongs not seen in 
+        most Native Spanish Speakers (NSS). Thus, although the function below seems to be haphazardly constructed,
+        it is actually set up for the sake of following Spanish Language Acquisition by NES students.*
+        >>>>>>> master
 
         :returns: dataframe with lots of good data
         :rtype: pandas DataFrame
@@ -237,49 +255,30 @@ def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descr
 
         long_vowel_list = ['a:','e:','i:','o:','u:','ɛ:','æ:','ə:','ʌ:','ɪ:','ɔ:','ɑ:','ʊ:']
         diphthong_list =['au̯','eu̯','iu̯','ou̯','uu̯','ɛu̯','æu̯','əu̯','ʌu̯','ɪu̯','ɔu̯','ɑu̯','ʊu̯',
-                         'ai̯','ei̯','ii̯','oi̯','ui̯','ɛi̯','æi̯','əi̯','ʌi̯','ɪi̯','ɔi̯','ɑi̯','ʊi̯',
-                         'i̯a','i̯e','i̯i','i̯o','i̯u','i̯ɛ','i̯æ','i̯ə','i̯ʌ','i̯ɪ','i̯ɔ','i̯ɑ','i̯ʊ',
-                         'u̯a','u̯e','u̯i','u̯o','u̯u','u̯ɛ','u̯æ','u̯ə','u̯ʌ','u̯ɪ','u̯ɔ','u̯ɑ','u̯ʊ']
+                             'ai̯','ei̯','ii̯','oi̯','ui̯','ɛi̯','æi̯','əi̯','ʌi̯','ɪi̯','ɔi̯','ɑi̯','ʊi̯',
+                             'i̯a','i̯e','i̯i','i̯o','i̯u','i̯ɛ','i̯æ','i̯ə','i̯ʌ','i̯ɪ','i̯ɔ','i̯ɑ','i̯ʊ',
+                             'u̯a','u̯e','u̯i','u̯o','u̯u','u̯ɛ','u̯æ','u̯ə','u̯ʌ','u̯ɪ','u̯ɔ','u̯ɑ','u̯ʊ']
 
-<<<<<<< HEAD
+
         vowel_list = ['a', 'e', 'i', 'o', 'u']
         semivowwel_list =['i̯','u̯',]
         pure_vowel_list = ['a','e','i','o','u','ɛ','æ','ə','ʌ','ɪ','ɔ','ɑ','ʊ','ɚ']
 
         boolean = True
-
         while boolean == True:
-=======
-    """
-
-    long_vowel_list = ['a:','e:','i:','o:','u:','ɛ:','æ:','ə:','ʌ:','ɪ:','ɔ:','ɑ:','ʊ:']
-    diphthong_list =['au̯','eu̯','iu̯','ou̯','uu̯','ɛu̯','æu̯','əu̯','ʌu̯','ɪu̯','ɔu̯','ɑu̯','ʊu̯',
-                     'ai̯','ei̯','ii̯','oi̯','ui̯','ɛi̯','æi̯','əi̯','ʌi̯','ɪi̯','ɔi̯','ɑi̯','ʊi̯',
-                     'i̯a','i̯e','i̯i','i̯o','i̯u','i̯ɛ','i̯æ','i̯ə','i̯ʌ','i̯ɪ','i̯ɔ','i̯ɑ','i̯ʊ',
-                     'u̯a','u̯e','u̯i','u̯o','u̯u','u̯ɛ','u̯æ','u̯ə','u̯ʌ','u̯ɪ','u̯ɔ','u̯ɑ','u̯ʊ']
-
-    vowel_list = ['a', 'e', 'i', 'o', 'u']
-    semivowwel_list =['i̯','u̯',]
-    pure_vowel_list = ['a','e','i','o','u','ɛ','æ','ə','ʌ','ɪ','ɔ','ɑ','ʊ','ɚ']
-
-    boolean = True
-
-    while boolean == True:
-        if boolean == True:
-            for s in range(len(diphthong_list)):
-                # if the vowel set is a diphthong
-                # have to check diphthongs first because the program
-                # will pull the vowels or semivowels and miss their pairs
-                # if you don't
-                if diphthong_list[s] in prescrip_string:
-                    prescrip_vowel_ls.append(diphthong_list[s])
-                    boolean = False
-                    break
-                else:
-                    boolean = True
-
-            # if it wasn't in the first list
->>>>>>> master
+            if boolean == True:
+                for s in range(len(diphthong_list)):
+                    # if the vowel set is a diphthong
+                    # have to check diphthongs first because the program
+                    # will pull the vowels or semivowels and miss their pairs
+                    # if you don't
+                    if diphthong_list[s] in prescrip_string:
+                        prescrip_vowel_ls.append(diphthong_list[s])
+                        boolean = False
+                        break
+                    else:
+                        boolean = True
+                # if it wasn't in the first list
             if boolean == True:
                 for s in range(len(diphthong_list)):
                     if diphthong_list[s] in prescrip_string:
@@ -288,8 +287,6 @@ def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descr
                         break
                     else:
                         boolean = True
-
-
                 if boolean == True:
                     for i in range(len(vowel_list)):
                         if vowel_list[i] in prescrip_string:
@@ -298,40 +295,31 @@ def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descr
                             break
                         else:
                             boolean = True
-
-
         boolean1 = True
-
         while boolean1 == True:
-
             if boolean1 == True:
                 for j in range(len(long_vowel_list)):
                     if long_vowel_list[j] in descrip_string:
                         descrip_vowel_ls.append(long_vowel_list[j])
                         boolean1 = False
                         break
-
                 if boolean1 == True:
                     for q in range(len(diphthong_list)):
                         if diphthong_list[q] in descrip_string:
                             descrip_vowel_ls.append(diphthong_list[q])
                             boolean1 = False
                             break
-
                 if boolean1 == True:
                     for z in range(len(pure_vowel_list)):
                         if pure_vowel_list[z] in descrip_string:
                             descrip_vowel_ls.append(pure_vowel_list[z])
                             boolean1 = False
                             break
-
-
-
         #print("Prescriptive vowel list:")
         #print(prescrip_vowel_ls)
         #print("Descriptive vowel list:")
         #print(descrip_vowel_ls)
-
+    
     def string_list_phoneme_compare(response,answer):
         """
         Takes two lists of (IPA) strings--the student response (response) and the correct answer (answer)--
