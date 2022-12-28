@@ -217,6 +217,18 @@ class Partic:
         :prescrip_vowel_ls: the list of all of the 'correct' vowel pronunciations
         :descrip_vowel_ls: the list with all of the student's pronunciations of the vowels
 
+<<<<<<< HEAD
+=======
+def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
+    """
+    Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels.
+    
+    *It's important to note that prescriptive Spanish only contains some diphthongs and some vowels from the below
+    lists. However, Native English Speakers (NES) tend to pronounce Spanish with all sorts of long vowels (ones
+    ending with ':', pure vowels that are not in Spanish (e.g. the schwa, 'ə'), or other diphthongs not seen in 
+    most Native Spanish Speakers (NSS). Thus, although the function below seems to be haphazardly constructed,
+    it is actually set up for the sake of following Spanish Language Acquisition by NES students.*
+>>>>>>> master
 
         :returns: dataframe with lots of good data
         :rtype: pandas DataFrame
@@ -229,6 +241,7 @@ class Partic:
                          'i̯a','i̯e','i̯i','i̯o','i̯u','i̯ɛ','i̯æ','i̯ə','i̯ʌ','i̯ɪ','i̯ɔ','i̯ɑ','i̯ʊ',
                          'u̯a','u̯e','u̯i','u̯o','u̯u','u̯ɛ','u̯æ','u̯ə','u̯ʌ','u̯ɪ','u̯ɔ','u̯ɑ','u̯ʊ']
 
+<<<<<<< HEAD
         vowel_list = ['a', 'e', 'i', 'o', 'u']
         semivowwel_list =['i̯','u̯',]
         pure_vowel_list = ['a','e','i','o','u','ɛ','æ','ə','ʌ','ɪ','ɔ','ɑ','ʊ','ɚ']
@@ -236,6 +249,37 @@ class Partic:
         boolean = True
 
         while boolean == True:
+=======
+    """
+
+    long_vowel_list = ['a:','e:','i:','o:','u:','ɛ:','æ:','ə:','ʌ:','ɪ:','ɔ:','ɑ:','ʊ:']
+    diphthong_list =['au̯','eu̯','iu̯','ou̯','uu̯','ɛu̯','æu̯','əu̯','ʌu̯','ɪu̯','ɔu̯','ɑu̯','ʊu̯',
+                     'ai̯','ei̯','ii̯','oi̯','ui̯','ɛi̯','æi̯','əi̯','ʌi̯','ɪi̯','ɔi̯','ɑi̯','ʊi̯',
+                     'i̯a','i̯e','i̯i','i̯o','i̯u','i̯ɛ','i̯æ','i̯ə','i̯ʌ','i̯ɪ','i̯ɔ','i̯ɑ','i̯ʊ',
+                     'u̯a','u̯e','u̯i','u̯o','u̯u','u̯ɛ','u̯æ','u̯ə','u̯ʌ','u̯ɪ','u̯ɔ','u̯ɑ','u̯ʊ']
+
+    vowel_list = ['a', 'e', 'i', 'o', 'u']
+    semivowwel_list =['i̯','u̯',]
+    pure_vowel_list = ['a','e','i','o','u','ɛ','æ','ə','ʌ','ɪ','ɔ','ɑ','ʊ','ɚ']
+
+    boolean = True
+
+    while boolean == True:
+        if boolean == True:
+            for s in range(len(diphthong_list)):
+                # if the vowel set is a diphthong
+                # have to check diphthongs first because the program
+                # will pull the vowels or semivowels and miss their pairs
+                # if you don't
+                if diphthong_list[s] in prescrip_string:
+                    prescrip_vowel_ls.append(diphthong_list[s])
+                    boolean = False
+                    break
+                else:
+                    boolean = True
+
+            # if it wasn't in the first list
+>>>>>>> master
             if boolean == True:
                 for s in range(len(diphthong_list)):
                     if diphthong_list[s] in prescrip_string:
