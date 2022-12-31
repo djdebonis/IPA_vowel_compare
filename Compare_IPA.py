@@ -43,12 +43,10 @@ class Partic:
         """
 
         
-        self.pronunication_dictionary = self.bring_in_data(_filename)
+        self.pronunciation_dictionary = self.bring_in_data(_filename)
         self.file_info = self.file_finder(_filename)
         self.id = self.file_info["file_name"]
         self.id_number = self.file_info["partic_num"]
-        print(self.id_number)
-        print(type(self.id_number))
         self.survey_dictionary = self.survey_results(_df)
 
     def open_and_read(self, infile_path_and_name):
@@ -180,7 +178,6 @@ class Partic:
             
         partic_num_string = file_name[-2:]
         partic_num = int(partic_num_string)
-        print(partic_num)
 
 
         dictionary = {"full_path": filepath, "file_name": file_name,
@@ -192,8 +189,8 @@ class Partic:
     def survey_results(self, df):
         """
         """
-        series = df.iloc[self.id_number]
-        dictionary = series.to_dict()
+        series = df.loc[df["partic_index"] == self.id_number]
+        dictionary = pd.DataFrame(series)
         
         return(dictionary)
 
