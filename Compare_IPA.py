@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import scipy.stats as stat
 import os
 import streamlit as st
+from typing import Dict
 
-class Partic:
+class Participant:
     """
     A class to represent a participant of the study (hence `Partic`)
 
@@ -28,7 +29,7 @@ class Partic:
         Prints the person's name and age.
     """
 
-    def __init__(self, _filename, _df):
+    def __init__(self, _filename, _survey_df, _prescriptive_pronunciation):
         """
         Constructs all the necessary attributes for the person object.
 
@@ -47,7 +48,8 @@ class Partic:
         self.file_info = self.file_finder(_filename)
         self.id = self.file_info["file_name"]
         self.id_number = self.file_info["partic_num"]
-        self.survey_dictionary = self.survey_results(_df)
+        self.survey_dictionary = self.survey_results(_survey_df)
+        self.pronunciation_dataframe = self.string_list_phoneme_compare(self.pronunciation_dictionary["clean_transcript"],_prescriptive_pronunciation)
 
     def open_and_read(self, infile_path_and_name):
         """
@@ -190,9 +192,9 @@ class Partic:
         """
         """
         series = df.loc[df["partic_index"] == self.id_number]
-        dictionary = pd.DataFrame(series)
-        
-        return(dictionary)
+        survey_dictionary = series.to_dict('list')
+        survey_dictionary = {k: v[0] for k, v in survey_dictionary.items()}
+        return(survey_dictionary)
 
 
     
@@ -216,7 +218,7 @@ class Partic:
         return(dictionary)
 
 
-    def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
+    def vowel_lists_append(self, prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
         """
         Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels
         
@@ -234,7 +236,7 @@ class Partic:
         <<<<<<< HEAD
         ======="""
         
-    def vowel_lists_append(prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
+    def vowel_lists_append(self, prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
         """
         Takes two lists of strings and two strings and appends the vowels of the new strings on to the list of vowels.
 
@@ -317,7 +319,7 @@ class Partic:
         #print("Descriptive vowel list:")
         #print(descrip_vowel_ls)
     
-    def string_list_phoneme_compare(response,answer):
+    def string_list_phoneme_compare(self,response,answer):
         """
         Takes two lists of (IPA) strings--the student response (response) and the correct answer (answer)--
         and compares them against eachother. Then, the function will (1) find mismatches, and
@@ -364,8 +366,8 @@ class Partic:
                 response_word = response[s]
 
                 # break each string into a smaller list of individual syllables
-                d_list_of_syllables = syllabize_further(response[s])
-                p_list_of_syllables = syllabize_further(answer[s])
+                d_list_of_syllables = self.syllabize_further(response[s])
+                p_list_of_syllables = self.syllabize_further(answer[s])
 
                 #p_syllables[s] = p_list_of_syllables
                 #d_syllables[s] = d_list_of_syllables
@@ -378,7 +380,7 @@ class Partic:
                         descriptive_syllable = d_list_of_syllables[j]
                         prescriptive_syllable = p_list_of_syllables[j]
 
-                        vowel_lists_append(prescriptive_syllable, descriptive_syllable, prescriptive_allophones, student_allophones)
+                        self.vowel_lists_append(prescriptive_syllable, descriptive_syllable, prescriptive_allophones, student_allophones)
 
                         word_index.append(s)
                         word.append(answer_word)
