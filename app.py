@@ -1,17 +1,42 @@
 # import necessary modules
-import streamlit as st
-import re
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.stats as stat
-import glob as glob
+import glob
+import importlib
 import os
+import re
+import sys
 import time
-import altair as alt
 
-# import local .py scripts with function definitions/declarations
-import Compare_IPA as ipa
+import altair as alt
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy.stats as stat
+import streamlit as st
+
+import compare_IPA as ipa
+
+def grab_number(string) -> int:
+    """
+    """
+    num_string = string[-2:]
+    num = int(num_string)
+    
+    return(num)
+
+def partic_number(survey_data):
+    """
+    """
+    
+    new_index = []
+    
+    for i,row in survey_data.iterrows():
+        partic_string = row["partic_number"]
+        partic_number = grab_number(partic_string)
+        new_index.append(partic_number)
+        
+    survey_data["partic_index"] = new_index
+        
+    return(survey_data)
 
 
 def folder_selector(folder_path='./', key=0):
@@ -64,377 +89,385 @@ presc_folder_path = transcription_folder + "/" + prescriptive_transcript_folder 
 
 # st.write()
 
+survey_data_raw = pd.read_csv("survey_data.csv") # import the data from the survey
+survey_data = partic_number(survey_data_raw)
 
 desc_transcript_files = glob.glob(desc_folder_path + '*.txt') # take in all desc filepaths
-presc_transcript_file = glob.glob(presc_folder_path + '*.txt') # take in presc transc file
+presc_transcript_file = glob.glob(presc_folder_path + '*.txt') # take in presc transcription file
 
-desc_dictionaries = ipa.bring_in_data(desc_transcript_files)
-presc_dictionary = ipa.bring_in_data(presc_transcript_file)
+presc_dictionary_ls = ipa.bring_in_data(presc_transcript_file)
+presc_dictionary = presc_dictionary_ls[0]
+prescriptive_transcription = presc_dictionary["clean_transcript"]
 
-
-
-for index,dictionary in enumerate(desc_dictionaries):
-    temp_desc_transcript = desc_dictionaries[index]["clean_transcript"]
-    presc_transcript = presc_dictionary[0]["clean_transcript"]
-    temp_df = ipa.string_list_phoneme_compare(temp_desc_transcript,
-presc_transcript)
-    desc_dictionaries[index]['DF'] = temp_df
-
-survey_data = pd.read_csv("survey_data.csv") # import the data from the survey
-
-survey_dicts = survey_data.to_dict('record') # turn each row into a respective dictionary entry
-for dct_index,dct in enumerate(desc_dictionaries):
-    partic = dct['file_name']
-
-    for new_dct_index,new_dct in enumerate(survey_dicts): # the double loop allows this to
-        # funciton even though the range does not match between the results and the survey
-        # dictionaries (some participants never finished their participation)
-        if new_dct['partic_number'] == partic:
-            desc_dictionaries[dct_index] = {**desc_dictionaries[dct_index], **survey_dicts[new_dct_index]}
-partic_names = []
-study_data = []
-years_instruct = []
-order = []
-word_data = pd.read_csv("dictionary.csv")
-
-for index, dictionary in enumerate(desc_dictionaries):
-    df = dictionary['DF']
-
-    partic_name = dictionary['partic_number']
-    years = dictionary['years_formal_instruct']
-    order.append(index)
-    partic_names.append(partic_name)
-    study_data.append(df)
-    years_instruct.append(years)
+participant_classes = [ipa.Participant(file, survey_data, prescriptive_transcription) for file in desc_transcript_files]
+participant_data = [(i, e.pronunciation_dataframe) for i,e in enumerate(participant_classes)]
 
 
-st.write("### Prescriptive Transcript:")
-st.markdown("> " + presc_dictionary[0]['raw_transcript'])
-
-data_explore_keys = ["Nothing", "View participant data", "View descriptive statistics"]
-
-data_explore = st.selectbox("What information would you like to look at?", data_explore_keys)
-
-if data_explore == data_explore_keys[0]:
-    st.write("Please select an option to view data!")
-
-elif data_explore == data_explore_keys[1]: # view particpant data
-    partic_keys = []
-    for i, dictionary in enumerate(desc_dictionaries):
-        temp_key = dictionary['partic_number']
-        partic_keys.append(temp_key)
-
-    show_dictionary = st.selectbox("Select a participant's dictionary:", partic_keys)
-    for i, dictionary in enumerate(desc_dictionaries):
-        if dictionary['partic_number'] == show_dictionary:
-            st.write("## Participant MetaData: ")
-            st.write("### Participant Name: ")
-            st.write(dictionary['partic_number'])
-            st.write("### File Name & Path: ")
-            st.write(dictionary['full_path'])
-
-            st.write("## Summary of Pronunciation")
-            st.write("### Raw Transcript: ")
-            st.markdown("> " + dictionary['raw_transcript'])
-            st.write("### Participants Summary: ")
-            st.write("#### (How this participant matched up against the prescriptive IPA transcript)")
-            st.write("")
-            st.write(dictionary['DF'])
-
-            st.write("## Survey Results")
-            # questions in the survey (change method of import)
-            questions=["What is your name?",
-               "What is your age?",
-               "How would you self-identify in terms of your Spanish language ability?",
-               "Have you ever traveled to a Spanish-speaking country, and, if so, did you communicate in Spanish while in that Spanish-speaking country?",
-               "Have you ever traveled to a Spanish-speaking country on an education-focused travel-abroad program?",
-               "Did you have any significant exposure to Spanish before the age of 10? (significant could mean: a family member spoke to you; you lived in a Spanish-speaking country; you took a Spanish class; etc.)",
-               "Have you ever received formal Spanish language instruction?",
-               "If you have you received formal Spanish language instruction, approximately how many years? (Assume each college semester = 1 year; each High School course = 1 year) If not, please enter '0'.",
-               "If you have you ever received formal Spanish language instruction, have you every been explicitly taught Spanish pronunciation?",
-               "How often do you have exposure to Spanish (outside of a classroom setting)?",
-               "How often do you speak in Spanish (outside of a classroom setting)?",
-               "When was the last time you spoke Spanish (outside of a classroom setting)?",
-               "Are you currently trying to learn Spanish?"]
-
-            question_keys = []
-            question_answers = []
-            for i, key in enumerate(list(survey_data.keys())):
-                question_keys.append(key)
-                question_answers.append(dictionary[key])
-
-
-            # st.selectbox("Please select the question: ", questions)
-            partic_survey_results = pd.DataFrame(zip(question_keys, questions, question_answers), columns = ['question_key', 'questions', 'answer'])
-            st.table(partic_survey_results)
-
-            
-            st.write("## Total Results")
-            st.write("### Filter results by:")
-            
-            st.write("**Phoneme criteria:**")
-            dict = dictionary['DF']
-            trick_ls = [dict]
-            
-            allophone0_bool = st.checkbox('/a/')
-            if allophone0_bool:
-                allophone0 = 'a'
-            else:
-                allophone0 = ''
-            allophone1_bool = st.checkbox('/e/')
-            if allophone1_bool:
-                allophone1 = 'e'
-            else:
-                allophone1 = ''
-
-            allophone2_bool = st.checkbox('/i/')
-            if allophone2_bool:
-                allophone2 = 'i'
-            else:
-                allophone2 = ''
-
-            allophone3_bool = st.checkbox('/o/')
-            if allophone3_bool:
-                allophone3 = 'o'
-            else:
-                allophone3 = ''
-
-            allophone4_bool = st.checkbox('/u/')
-            if allophone4_bool:
-                allophone4 = 'u'
-            else:
-                allophone4 = ''
-
-            filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
-            allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-            
-            st.write("**Dictionary criteria:**")
-            
-            cognate_bool = st.checkbox('Cognates')
-            if cognate_bool:
-                column_criteria0 = 'cognate'
-                equivelancy_criteria0 = '1'
-            else:
-                column_criteria0 = ''
-                equivelancy_criteria0 = ''
-            
-            noncognate_bool = st.checkbox('Non-cognates')
-            if noncognate_bool:
-                column_criteria1 = ''
-                equivelancy_criteria1 = '0'
-            else:
-                column_criteria1 = ''
-                equivelancy_criteria1 = ''
-            
-            term_vowel_bool = st.checkbox('Terminal vowels')
-            if term_vowel_bool:
-                column_criteria2 = 'term_vowel'
-                equivelancy_criteria2 = '1'
-            else:
-                column_criteria2 = ''
-                equivelancy_criteria2 = ''
-            non_term_vowel_bool = st.checkbox("Non-terminal vowels")
-            
-            if non_term_vowel_bool:
-                column_criteria3 = 'term_vowel'
-                equivelancy_criteria3 = '0'
-            else:
-                column_criteria3 = ''
-                equivelancy_criteria3 = ''
-                
-            init_vowel_bool = st.checkbox("Vowel initial")
-            if init_vowel_bool:
-                column_criteria4 = 'term_vowel'
-                equivelancy_criteria4 = '1'
-            else:
-                column_criteria4 = ''
-                equivelancy_criteria4 = ''
-                
-            non_init_vowel_bool = st.checkbox("Non-vowel initial")
-            if init_vowel_bool:
-                column_criteria5 = 'term_vowel'
-                equivelancy_criteria5 = '0'
-            else:
-                column_criteria5 = ''
-                equivelancy_criteria5 = ''
-        
-            filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
+with st.sidebar:
+    left_tag = st.selectbox("Chose Data", participant_data, index=0)
     
-            st.write(filtered_by_dict[0])
-            st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
-            
-            
-
-
-elif data_explore == data_explore_keys[2]:
-
-
-    descriptive_stats_options = ["Nothing","The wordlist", "Survey results", "Pronunciation outcomes"]
-
-    descriptive_stats_choice = st.selectbox("Chose what stats you would like to explore", descriptive_stats_options)
-
-    if descriptive_stats_choice == descriptive_stats_options[1]:
-        st.write(word_data.keys())
-
-        words = word_data['word']
-        word_size = len(words)
-
-        def filter_dict(dictionary_df, column_criteria, equivelancy_criteria):
-            row_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
-            words = row_selects['word']
-            return(words)
-
-        terminal_vowels = filter_dict(word_data, 'term_vowel', 1)
-        terminal_vowel_prop = len(terminal_vowels) / word_size
-
-        init_vowels = filter_dict(word_data, 'init_vowel', 1)
-        init_vowels_prop = len(init_vowels) / word_size
-        cognates = filter_dict(word_data, 'cognate', 1)
-
-        ls_types = ['initial letter', 'terminal letter', 'cognate status', 'initial letter', 'terminal letter', 'cognate status']
-
-
-        alt.Chart(word_data).mark_text(filled=True).encode(
-            alt.X('term_vowel:O', axis=None),
-            alt.Y('animal:O', axis=None),
-            alt.Row('country:N', header=alt.Header(title='')),
-            alt.SizeValue(60),
-            text='emoji'
-        ).properties(width=800, height=200)
-
-        # https://vega.github.io/vega-lite/examples/isotype_bar_chart_emoji.html
-
-
-    elif descriptive_stats_choice == descriptive_stats_options[3]:
-        # write information on total dataset
-        total_accuracy = ipa.get_proportions(study_data)
-        total_accuracy_mean = np.mean(total_accuracy)
-        total_accuracy_std = np.std(total_accuracy)
-        st.write("### All participants")
-        st.write("Across all of the sample, the particpants scored an average of " + str(round((total_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((total_accuracy_std * 100), 2)) + "%")
-        # time.sleep()
-
-        # write information on cognates
-        non_cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 0, study_data)
-        non_cognate_accuracy = ipa.get_proportions(non_cognate_dfs)
-        non_cognate_accuracy_mean = np.mean(non_cognate_accuracy)
-        non_cognate_accuracy_std = np.std(non_cognate_accuracy)
-        st.write("For non-cognates words, the particpants scored an average of " + str(round((non_cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((non_cognate_accuracy_std * 100), 2)) + "%")
-
-    # calculate mean and std for cognate pronunciation accuracy across the *entrie* sample
-        cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 1, study_data) # create a list of dfs that only accounts for the cognates in the study
-        cognate_accuracy = ipa.get_proportions(cognate_dfs)
-        cognate_accuracy_mean = np.mean(cognate_accuracy)
-        cognate_accuracy_std = np.std(cognate_accuracy)
-        st.write("For cognates, the particpants scored an average of " + str(round((cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((cognate_accuracy_std * 100), 2)) + "%")
-
-
-        stat = stat.ttest_ind(cognate_accuracy, non_cognate_accuracy, equal_var=False)
-        pvalue = stat[1]
-
-        st.write("According to a two sample t-test (p < 0.05, equal varience = False):")
-
-        if pvalue >= 0.05:
-            st.markdown("> We fail to reject the null hypothesis. There is not enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
-        else:
-            st.markdown("> We choose to reject the null hypothesis. There is enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
+st.write(left_tag[1])
 
 
 
-
-        st.write("## Total Results")
-        st.write("**Phoneme criteria:**")
-        dict = dictionary['DF']
-        trick_ls = [dict]
-        
-        allophone0_bool = st.checkbox('/a/')
-        if allophone0_bool:
-            allophone0 = 'a'
-        else:
-            allophone0 = ''
-        allophone1_bool = st.checkbox('/e/')
-        if allophone1_bool:
-            allophone1 = 'e'
-        else:
-            allophone1 = ''
-        allophone2_bool = st.checkbox('/i/')
-        if allophone2_bool:
-            allophone2 = 'i'
-        else:
-            allophone2 = ''
-        allophone3_bool = st.checkbox('/o/')
-        if allophone3_bool:
-            allophone3 = 'o'
-        else:
-            allophone3 = ''
-        allophone4_bool = st.checkbox('/u/')
-        if allophone4_bool:
-            allophone4 = 'u'
-        else:
-            allophone4 = ''
-        filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
-        allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-        
-        st.write("**Dictionary criteria:**")
-        
-        cognate_bool = st.checkbox('Cognates')
-        if cognate_bool:
-            column_criteria0 = 'cognate'
-            equivelancy_criteria0 = '1'
-        else:
-            column_criteria0 = ''
-            equivelancy_criteria0 = ''
-        
-        noncognate_bool = st.checkbox('Non-cognates')
-        if noncognate_bool:
-            column_criteria1 = ''
-            equivelancy_criteria1 = '0'
-        else:
-            column_criteria1 = ''
-            equivelancy_criteria1 = ''
-        
-        term_vowel_bool = st.checkbox('Terminal vowels')
-        if term_vowel_bool:
-            column_criteria2 = 'term_vowel'
-            equivelancy_criteria2 = '1'
-        else:
-            column_criteria2 = ''
-            equivelancy_criteria2 = ''
-            
-        non_term_vowel_bool = st.checkbox("Non-terminal vowels")
-        if non_term_vowel_bool:
-            column_criteria3 = 'term_vowel'
-            equivelancy_criteria3 = '0'
-        else:
-            column_criteria3 = ''
-            equivelancy_criteria3 = ''
-            
-        init_vowel_bool = st.checkbox("Vowel initial")
-        if init_vowel_bool:
-            column_criteria4 = 'term_vowel'
-            equivelancy_criteria4 = '1'
-        else:
-            column_criteria4 = ''
-            equivelancy_criteria4 = ''
-            
-        non_init_vowel_bool = st.checkbox("Non-vowel initial")
-        if init_vowel_bool:
-            column_criteria5 = 'term_vowel'
-            equivelancy_criteria5 = '0'
-        else:
-            column_criteria5 = ''
-            equivelancy_criteria5 = ''
+# # for index,dictionary in enumerate(participant_classes):
+# #     temp_desc_transcript = desc_dictionaries[index].pronunciation_dictionary["clean_transcript"]
+# #     presc_transcript = presc_dictionary[0]["clean_transcript"]
     
-        filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
-        
 
-        st.write(filtered_by_dict[0])
-        st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
+# survey_dicts = survey_data.to_dict('record') # turn each row into a respective dictionary entry
+# for dct_index,dct in enumerate(desc_dictionaries):
+#     partic = dct['file_name']
+
+#     for new_dct_index,new_dct in enumerate(survey_dicts): # the double loop allows this to
+#         # funciton even though the range does not match between the results and the survey
+#         # dictionaries (some participants never finished their participation)
+#         if new_dct['partic_number'] == partic:
+#             desc_dictionaries[dct_index] = {**desc_dictionaries[dct_index], **survey_dicts[new_dct_index]}
+# partic_names = []
+# study_data = []
+# years_instruct = []
+# order = []
+# word_data = pd.read_csv("dictionary.csv")
+
+# for index, dictionary in enumerate(desc_dictionaries):
+#     df = dictionary['DF']
+
+#     partic_name = dictionary['partic_number']
+#     years = dictionary['years_formal_instruct']
+#     order.append(index)
+#     partic_names.append(partic_name)
+#     study_data.append(df)
+#     years_instruct.append(years)
+
+
+# st.write("### Prescriptive Transcript:")
+# st.markdown("> " + presc_dictionary[0]['raw_transcript'])
+
+# data_explore_keys = ["Nothing", "View participant data", "View descriptive statistics"]
+
+# data_explore = st.selectbox("What information would you like to look at?", data_explore_keys)
+
+# if data_explore == data_explore_keys[0]:
+#     st.write("Please select an option to view data!")
+
+# elif data_explore == data_explore_keys[1]: # view particpant data
+#     partic_keys = []
+#     for i, dictionary in enumerate(desc_dictionaries):
+#         temp_key = dictionary['partic_number']
+#         partic_keys.append(temp_key)
+
+#     show_dictionary = st.selectbox("Select a participant's dictionary:", partic_keys)
+#     for i, dictionary in enumerate(desc_dictionaries):
+#         if dictionary['partic_number'] == show_dictionary:
+#             st.write("## Participant MetaData: ")
+#             st.write("### Participant Name: ")
+#             st.write(dictionary['partic_number'])
+#             st.write("### File Name & Path: ")
+#             st.write(dictionary['full_path'])
+
+#             st.write("## Summary of Pronunciation")
+#             st.write("### Raw Transcript: ")
+#             st.markdown("> " + dictionary['raw_transcript'])
+#             st.write("### Participants Summary: ")
+#             st.write("#### (How this participant matched up against the prescriptive IPA transcript)")
+#             st.write("")
+#             st.write(dictionary['DF'])
+
+#             st.write("## Survey Results")
+#             # questions in the survey (change method of import)
+#             questions=["What is your name?",
+#                "What is your age?",
+#                "How would you self-identify in terms of your Spanish language ability?",
+#                "Have you ever traveled to a Spanish-speaking country, and, if so, did you communicate in Spanish while in that Spanish-speaking country?",
+#                "Have you ever traveled to a Spanish-speaking country on an education-focused travel-abroad program?",
+#                "Did you have any significant exposure to Spanish before the age of 10? (significant could mean: a family member spoke to you; you lived in a Spanish-speaking country; you took a Spanish class; etc.)",
+#                "Have you ever received formal Spanish language instruction?",
+#                "If you have you received formal Spanish language instruction, approximately how many years? (Assume each college semester = 1 year; each High School course = 1 year) If not, please enter '0'.",
+#                "If you have you ever received formal Spanish language instruction, have you every been explicitly taught Spanish pronunciation?",
+#                "How often do you have exposure to Spanish (outside of a classroom setting)?",
+#                "How often do you speak in Spanish (outside of a classroom setting)?",
+#                "When was the last time you spoke Spanish (outside of a classroom setting)?",
+#                "Are you currently trying to learn Spanish?"]
+
+#             question_keys = []
+#             question_answers = []
+#             for i, key in enumerate(list(survey_data.keys())):
+#                 question_keys.append(key)
+#                 question_answers.append(dictionary[key])
+
+
+#             # st.selectbox("Please select the question: ", questions)
+#             partic_survey_results = pd.DataFrame(zip(question_keys, questions, question_answers), columns = ['question_key', 'questions', 'answer'])
+#             st.table(partic_survey_results)
+
+            
+#             st.write("## Total Results")
+#             st.write("### Filter results by:")
+            
+#             st.write("**Phoneme criteria:**")
+#             dict = dictionary['DF']
+#             trick_ls = [dict]
+            
+#             allophone0_bool = st.checkbox('/a/')
+#             if allophone0_bool:
+#                 allophone0 = 'a'
+#             else:
+#                 allophone0 = ''
+#             allophone1_bool = st.checkbox('/e/')
+#             if allophone1_bool:
+#                 allophone1 = 'e'
+#             else:
+#                 allophone1 = ''
+
+#             allophone2_bool = st.checkbox('/i/')
+#             if allophone2_bool:
+#                 allophone2 = 'i'
+#             else:
+#                 allophone2 = ''
+
+#             allophone3_bool = st.checkbox('/o/')
+#             if allophone3_bool:
+#                 allophone3 = 'o'
+#             else:
+#                 allophone3 = ''
+
+#             allophone4_bool = st.checkbox('/u/')
+#             if allophone4_bool:
+#                 allophone4 = 'u'
+#             else:
+#                 allophone4 = ''
+
+#             filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
+#             allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
+            
+#             st.write("**Dictionary criteria:**")
+            
+#             cognate_bool = st.checkbox('Cognates')
+#             if cognate_bool:
+#                 column_criteria0 = 'cognate'
+#                 equivelancy_criteria0 = '1'
+#             else:
+#                 column_criteria0 = ''
+#                 equivelancy_criteria0 = ''
+            
+#             noncognate_bool = st.checkbox('Non-cognates')
+#             if noncognate_bool:
+#                 column_criteria1 = ''
+#                 equivelancy_criteria1 = '0'
+#             else:
+#                 column_criteria1 = ''
+#                 equivelancy_criteria1 = ''
+            
+#             term_vowel_bool = st.checkbox('Terminal vowels')
+#             if term_vowel_bool:
+#                 column_criteria2 = 'term_vowel'
+#                 equivelancy_criteria2 = '1'
+#             else:
+#                 column_criteria2 = ''
+#                 equivelancy_criteria2 = ''
+#             non_term_vowel_bool = st.checkbox("Non-terminal vowels")
+            
+#             if non_term_vowel_bool:
+#                 column_criteria3 = 'term_vowel'
+#                 equivelancy_criteria3 = '0'
+#             else:
+#                 column_criteria3 = ''
+#                 equivelancy_criteria3 = ''
+                
+#             init_vowel_bool = st.checkbox("Vowel initial")
+#             if init_vowel_bool:
+#                 column_criteria4 = 'term_vowel'
+#                 equivelancy_criteria4 = '1'
+#             else:
+#                 column_criteria4 = ''
+#                 equivelancy_criteria4 = ''
+                
+#             non_init_vowel_bool = st.checkbox("Non-vowel initial")
+#             if init_vowel_bool:
+#                 column_criteria5 = 'term_vowel'
+#                 equivelancy_criteria5 = '0'
+#             else:
+#                 column_criteria5 = ''
+#                 equivelancy_criteria5 = ''
+        
+#             filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
+    
+#             st.write(filtered_by_dict[0])
+#             st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
+            
             
 
-#st.write("Files in " + desc_folder_path + ": ")
-#for i,e in enumerate(desc_transcript_files):
- #   st.write(e)
 
-#st.write("Files in " + presc_folder_path + ": ")
-#st.write(presc_transcript_file)
+# elif data_explore == data_explore_keys[2]:
+
+
+#     descriptive_stats_options = ["Nothing","The wordlist", "Survey results", "Pronunciation outcomes"]
+
+#     descriptive_stats_choice = st.selectbox("Chose what stats you would like to explore", descriptive_stats_options)
+
+#     if descriptive_stats_choice == descriptive_stats_options[1]:
+#         st.write(word_data.keys())
+
+#         words = word_data['word']
+#         word_size = len(words)
+
+#         def filter_dict(dictionary_df, column_criteria, equivelancy_criteria):
+#             row_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
+#             words = row_selects['word']
+#             return(words)
+
+#         terminal_vowels = filter_dict(word_data, 'term_vowel', 1)
+#         terminal_vowel_prop = len(terminal_vowels) / word_size
+
+#         init_vowels = filter_dict(word_data, 'init_vowel', 1)
+#         init_vowels_prop = len(init_vowels) / word_size
+#         cognates = filter_dict(word_data, 'cognate', 1)
+
+#         ls_types = ['initial letter', 'terminal letter', 'cognate status', 'initial letter', 'terminal letter', 'cognate status']
+
+
+#         alt.Chart(word_data).mark_text(filled=True).encode(
+#             alt.X('term_vowel:O', axis=None),
+#             alt.Y('animal:O', axis=None),
+#             alt.Row('country:N', header=alt.Header(title='')),
+#             alt.SizeValue(60),
+#             text='emoji'
+#         ).properties(width=800, height=200)
+
+#         # https://vega.github.io/vega-lite/examples/isotype_bar_chart_emoji.html
+
+
+#     elif descriptive_stats_choice == descriptive_stats_options[3]:
+#         # write information on total dataset
+#         total_accuracy = ipa.get_proportions(study_data)
+#         total_accuracy_mean = np.mean(total_accuracy)
+#         total_accuracy_std = np.std(total_accuracy)
+#         st.write("### All participants")
+#         st.write("Across all of the sample, the particpants scored an average of " + str(round((total_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((total_accuracy_std * 100), 2)) + "%")
+#         # time.sleep()
+
+#         # write information on cognates
+#         non_cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 0, study_data)
+#         non_cognate_accuracy = ipa.get_proportions(non_cognate_dfs)
+#         non_cognate_accuracy_mean = np.mean(non_cognate_accuracy)
+#         non_cognate_accuracy_std = np.std(non_cognate_accuracy)
+#         st.write("For non-cognates words, the particpants scored an average of " + str(round((non_cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((non_cognate_accuracy_std * 100), 2)) + "%")
+
+#     # calculate mean and std for cognate pronunciation accuracy across the *entrie* sample
+#         cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 1, study_data) # create a list of dfs that only accounts for the cognates in the study
+#         cognate_accuracy = ipa.get_proportions(cognate_dfs)
+#         cognate_accuracy_mean = np.mean(cognate_accuracy)
+#         cognate_accuracy_std = np.std(cognate_accuracy)
+#         st.write("For cognates, the particpants scored an average of " + str(round((cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((cognate_accuracy_std * 100), 2)) + "%")
+
+
+#         stat = stat.ttest_ind(cognate_accuracy, non_cognate_accuracy, equal_var=False)
+#         pvalue = stat[1]
+
+#         st.write("According to a two sample t-test (p < 0.05, equal varience = False):")
+
+#         if pvalue >= 0.05:
+#             st.markdown("> We fail to reject the null hypothesis. There is not enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
+#         else:
+#             st.markdown("> We choose to reject the null hypothesis. There is enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
+
+
+
+
+#         st.write("## Total Results")
+#         st.write("**Phoneme criteria:**")
+#         dict = dictionary['DF']
+#         trick_ls = [dict]
+        
+#         allophone0_bool = st.checkbox('/a/')
+#         if allophone0_bool:
+#             allophone0 = 'a'
+#         else:
+#             allophone0 = ''
+#         allophone1_bool = st.checkbox('/e/')
+#         if allophone1_bool:
+#             allophone1 = 'e'
+#         else:
+#             allophone1 = ''
+#         allophone2_bool = st.checkbox('/i/')
+#         if allophone2_bool:
+#             allophone2 = 'i'
+#         else:
+#             allophone2 = ''
+#         allophone3_bool = st.checkbox('/o/')
+#         if allophone3_bool:
+#             allophone3 = 'o'
+#         else:
+#             allophone3 = ''
+#         allophone4_bool = st.checkbox('/u/')
+#         if allophone4_bool:
+#             allophone4 = 'u'
+#         else:
+#             allophone4 = ''
+#         filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
+#         allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
+        
+#         st.write("**Dictionary criteria:**")
+        
+#         cognate_bool = st.checkbox('Cognates')
+#         if cognate_bool:
+#             column_criteria0 = 'cognate'
+#             equivelancy_criteria0 = '1'
+#         else:
+#             column_criteria0 = ''
+#             equivelancy_criteria0 = ''
+        
+#         noncognate_bool = st.checkbox('Non-cognates')
+#         if noncognate_bool:
+#             column_criteria1 = ''
+#             equivelancy_criteria1 = '0'
+#         else:
+#             column_criteria1 = ''
+#             equivelancy_criteria1 = ''
+        
+#         term_vowel_bool = st.checkbox('Terminal vowels')
+#         if term_vowel_bool:
+#             column_criteria2 = 'term_vowel'
+#             equivelancy_criteria2 = '1'
+#         else:
+#             column_criteria2 = ''
+#             equivelancy_criteria2 = ''
+            
+#         non_term_vowel_bool = st.checkbox("Non-terminal vowels")
+#         if non_term_vowel_bool:
+#             column_criteria3 = 'term_vowel'
+#             equivelancy_criteria3 = '0'
+#         else:
+#             column_criteria3 = ''
+#             equivelancy_criteria3 = ''
+            
+#         init_vowel_bool = st.checkbox("Vowel initial")
+#         if init_vowel_bool:
+#             column_criteria4 = 'term_vowel'
+#             equivelancy_criteria4 = '1'
+#         else:
+#             column_criteria4 = ''
+#             equivelancy_criteria4 = ''
+            
+#         non_init_vowel_bool = st.checkbox("Non-vowel initial")
+#         if init_vowel_bool:
+#             column_criteria5 = 'term_vowel'
+#             equivelancy_criteria5 = '0'
+#         else:
+#             column_criteria5 = ''
+#             equivelancy_criteria5 = ''
+    
+#         filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
+        
+
+#         st.write(filtered_by_dict[0])
+#         st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
+            
+
+# #st.write("Files in " + desc_folder_path + ": ")
+# #for i,e in enumerate(desc_transcript_files):
+#  #   st.write(e)
+
+# #st.write("Files in " + presc_folder_path + ": ")
+# #st.write(presc_transcript_file)
