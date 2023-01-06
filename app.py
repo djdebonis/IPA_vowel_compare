@@ -102,7 +102,12 @@ prescriptive_transcription = presc_dictionary["clean_transcript"]
 participant_classes = [ipa.Participant(file, survey_data, prescriptive_transcription) for file in desc_transcript_files]
 participant_data = [(i, e.pronunciation_dataframe) for i,e in enumerate(participant_classes)]
 
+data_explore_keys = ["View participant data", "View descriptive statistics"]
 
+data_explore = st.selectbox("What information would you like to look at?", data_explore_keys)
+
+if data_explore == data_explore_keys[0]:
+    
 with st.sidebar:
     left_tag = st.selectbox("Chose Data", participant_data, index=0)
     
