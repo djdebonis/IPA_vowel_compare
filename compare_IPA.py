@@ -8,6 +8,142 @@ import os
 import streamlit as st
 from typing import Dict
 
+def file_finder(filepath):
+    """
+    Takes a filepath (str) and exracts: (1) its path, (2) its name, and (3) its extension.
+    This metadata is filtered into a dictionary.
+    For example, the filepath 'folder/directory/repository/file_name.txt' would return:
+        File path: 'folder/directory/repository/'
+        File name: 'file_name'
+        File extention: '.txt'
+    :param: filepath: string of a filepath (from current working directory)
+    :returns: dictionary with orginal filepath as well as sorted metadata
+    """
+    prefix = ""
+    file_name = ""
+    file_ext = ""
+
+    furthest_dir_index = 0
+    extention_index = 0
+
+    if "/" in filepath:
+        index_ls = []
+        for index,char in enumerate(filepath):
+            if char == "/":
+                index_ls.append(index)
+
+        furthest_dir_index = max(index_ls)
+
+        path = filepath[:(furthest_dir_index + 1)]
+
+
+
+    if "." in filepath:
+        for i,c in enumerate(filepath):
+            if c == ".":
+                extention_index = i
+                file_ext = filepath[extention_index:]
+
+        file_name = filepath[(furthest_dir_index + 1):(extention_index)]
+
+    else:
+        file_name = filepath[furthest_dir_index:]
+
+
+    dictionary = {"full_path": filepath, "file_name": file_name,
+                  "prefix": prefix, "extention" : file_ext}
+
+    return(dictionary)
+
+def open_and_read(infile_path_and_name):
+    """
+    opens a file and returns a long long long string
+    Parameters
+    ----------
+    infile_path_and_name : str
+        string of the path/path/txtFileName.txt from the current directory
+        
+    Returns
+    -------
+    string : str
+        string of the data within the designated file
+    """
+    path = infile_path_and_name
+
+    with open(path, 'r') as file:
+        string = file.read().replace('\n', '')
+
+    return string
+
+def split_sentence(sentence: str) -> list:
+    """
+    Takes a sentence in IPA and parses it to individual words by breaking according to
+    the " # " IPA string pattern, meaning in the import file each word should be
+    seperated by " # ".
+    Parameters
+    ----------
+    sentence : str
+        a sentence or list of words to parse
+    Returns
+    -------
+    words : list of str
+        a list of individual words/transcriptions
+    
+    """
+    words = sentence.split(" # ")
+    return words
+
+def rm_stress(word_list):
+    """
+    Takes a list of strings in IPA that contain prosodic accent marks and removes
+    the dashes to clean the data.
+    :word_list: list of strings
+    :returns: list of strings without prosodic accent marks
+    :rtype: list of strings
+    """
+    new_list = []
+    for s in range(len(word_list)):
+        word = word_list[s]
+        new_word = re.compile(r"'").sub("",word)
+        new_list.append(new_word)
+    return(new_list)
+
+def syllabize_further(word: str) -> list:
+    """
+    Takes a string with syllable hyphens and breaks it apart into a list of syllables
+    :word: str: word form with hyphens marking syllable
+    :returns: list of individual syllables
+    :rtype: list
+    """
+    syllables = word.split("-")
+    return syllables
+
+def bring_in_data(ls_of_file_paths):
+    """
+    Takes in data from the file_paths and sorts its respective information to dictionaries.
+    """
+    ls_of_dictionaries = []
+    for index, file_path in enumerate(ls_of_file_paths):
+        dictionary = file_finder(file_path)
+
+        temp_string = open_and_read(file_path)
+
+        temp_raw = split_sentence(temp_string)
+
+        temp_partic = rm_stress(temp_raw)
+
+        dictionary['import_index'] = index
+
+        dictionary['raw_transcript'] = temp_string
+
+        dictionary['clean_transcript'] = temp_partic
+
+
+        ls_of_dictionaries.append(dictionary)
+
+    return(ls_of_dictionaries)
+
+
 class Participant:
     """
     A class to represent a participant of the study (hence `Partic`)
@@ -45,11 +181,23 @@ class Participant:
 
         
         self.pronunciation_dictionary = self.bring_in_data(_filename)
+        
         self.file_info = self.file_finder(_filename)
+        
         self.id = self.file_info["file_name"]
-        self.id_number = self.file_info["partic_num"]
+        
         self.survey_dictionary = self.survey_results(_survey_df)
+        
         self.pronunciation_dataframe = self.string_list_phoneme_compare(self.pronunciation_dictionary["clean_transcript"],_prescriptive_pronunciation)
+
+    @property
+    def id_number(self):
+        return self.file_info["partic_num"]
+    
+    @property
+    def raw_transcript(self):
+        return self.pronunciation_dictionary["raw_transcript"]
+    
 
     def open_and_read(self, infile_path_and_name):
         """
@@ -431,222 +579,153 @@ class Participant:
         return(ls_of_dfs)
 
 
-
-    def filter_by_dictionary(dictionary_df, column_criteria, equivelancy_criteria, ls_of_dfs):
-        """
-        Uses the categorical/meta information from one dataframe (in this case, the dictionary dataframe), and uses some criteria
-        within it to filter another dataframe.
-
-        Parameters
-        ----------
-            dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
-
-            column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
-
-            equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
-
-            ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
-
-        Returns
-        --------
-            returns : a list of filtered dataframes
-
-            rtype : list of pd DataFrames
-
-        """
-
-        word_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
-
-        new_ls_of_dfs = []
-
-        for i in range(len(ls_of_dfs)):
-            temp_df = ls_of_dfs[i]
-            temp_df = temp_df[temp_df['word_number'].isin(word_selects['list_number'])]
-            new_ls_of_dfs.append(temp_df)
-
-        return(new_ls_of_dfs)
-
-    def filter_by_dictionary_mult_criteria(dictionary_df, ls_of_dfs, column_criteria0 = '', equivelancy_criteria0 = '', column_criteria1 = '', equivelancy_criteria1 = '', column_criteria2 = '', equivelancy_criteria2 = '', column_criteria3 = '', equivelancy_criteria3 = '', column_criteria4 = '', equivelancy_criteria4 = '', column_criteria5 = '', equivelancy_criteria5 = ''):
-        """
-        Uses the categorical/meta information from one dataframe (in this case, the dictionary dataframe), and uses some criteria
-        within it to filter another dataframe.
-
-        Parameters
-        ----------
-            dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
-
-            column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
-
-            equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
-
-            ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
-
-        Returns
-        --------
-            returns : a list of filtered dataframes
-
-            rtype : list of pd DataFrames
-
-        """
-
-       # Filter the dictionary by the criteria passed as arguments
-
-        dictionary_ls_dfs = []
-        if len(column_criteria0) > 0:
-            dictionary_df0 = dictionary_df[dictionary_df[column_criteria0] == int(equivelancy_criteria0)]
-            dictionary_ls_dfs.append(dictionary_df0)
-
-        if len(column_criteria1) > 0:
-            dictionary_df1 = dictionary_df[dictionary_df[column_criteria1] == int(equivelancy_criteria1)]
-            dictionary_ls_dfs.append(dictionary_df1)
-
-        if len(column_criteria2) > 0:
-            dictionary_df2 = dictionary_df[dictionary_df[column_criteria2] == int(equivelancy_criteria2)]
-            dictionary_ls_dfs.append(dictionary_df2)
-
-        if len(column_criteria3) > 0:
-            dictionary_df3 = dictionary_df[dictionary_df[column_criteria3] == int(equivelancy_criteria3)]
-            dictionary_ls_dfs.append(dictionary_df3)
-
-        if len(column_criteria4) > 0:
-            dictionary_df4 = dictionary_df[dictionary_df[column_criteria4] == int(equivelancy_criteria4)]
-            dictionary_ls_dfs.append(dictionary_df4)
-
-        if len(column_criteria5) > 0:
-            dictionary_df5 = dictionary_df[dictionary_df[column_criteria5] == int(equivelancy_criteria5)]
-            dictionary_ls_dfs.append(dictionary_df5)
-
-
-        new_dictionary_df = pd.concat(dictionary_ls_dfs)
-
-
-        new_ls_of_dfs =[]
-        for i in range(len(ls_of_dfs)):
-            temp_df = ls_of_dfs[i]
-            temp_df = temp_df[temp_df['prescriptive_pronunciation'].isin(new_dictionary_df['transcription'])]
-            new_ls_of_dfs.append(temp_df)
-
-        return(new_ls_of_dfs)
-
-    def filter_by_allophone(ls_of_dfs, allophone0  = '', allophone1 = '', allophone2 = '', allophone3 = '', allophone4 = '', allophone5 = ''):
-        """
-        Filter the entire list of dataframes by a specific allophone.
-
-        Parameters
-        ----------
-        :allophone[x]: the allophone that you want to focus on, e.g. 'a', 'e', etc.
-        :ls_of_dfs: a list of pandas DataFrames that you want to filter by some criteria
-
-        Returns
-        --------
-        :returns: a list of filtered dataframes
-        :rtype: list of pd DataFrames
-
-        """
-
-        new_ls_of_dfs = []
-
-        for i in range(len(ls_of_dfs)):
-            temp_df = ls_of_dfs[i]
-            temp_df0 = temp_df[temp_df['correct_allophone'] == allophone0]
-            temp_df1 = temp_df[temp_df['correct_allophone'] == allophone1]
-            temp_df2 = temp_df[temp_df['correct_allophone'] == allophone2]
-            temp_df3 = temp_df[temp_df['correct_allophone'] == allophone3]
-            temp_df4 = temp_df[temp_df['correct_allophone'] == allophone4]
-            temp_df5 = temp_df[temp_df['correct_allophone'] == allophone5]
-
-            temp_ls_dfs = [temp_df0, temp_df1, temp_df2, temp_df3, temp_df4, temp_df5]
-            new_temp_df = pd.concat(temp_ls_dfs)
-                              # == allophone] # right now the code doesn't account for any diphtongs
-            new_ls_of_dfs.append(new_temp_df)
-
-        return(new_ls_of_dfs)
-
-
-    def get_proportions(ls_of_dfs):
-        """
-
-        """
-        ls_of_proportions = []
-
-        for i in range(len(ls_of_dfs)):
-            temp_df = ls_of_dfs[i]
-
-            boolean = temp_df['correct_allophone'] == temp_df['student_allophone']
-            denominat = len(boolean)
-            numerat = boolean.sum()
-            proportion = numerat/denominat
-
-            ls_of_proportions.append(proportion)
-
-        return(ls_of_proportions)
-
-
-    def descriptive_stats(ls_of_dfs, allophone):
-        """
-        Returns some basic descriptive statistics about the selected allophone in the input dataframes.
-
-        """
-
-
-        new_ls_dfs = filter_by_allophone(ls_of_dfs, allophone0 = allophone) # because filter_by_allophone changed, there will have to be some corresponding changes
-        # to make sure everything else still runs smoothly
-        allophone_frequency = len(new_ls_dfs[0])
-
-        print("In this word list, the allophone [" + allophone + "] occured in " + str(allophone_frequency) + " syllables.")
-
-        accuracy_ls = get_proportions(new_ls_dfs)
-        accuracy_mean = np.mean(accuracy_ls)
-        accuracy_std = np.std(accuracy_ls)
-
-        print("For this allophone:")
-        print("The particpants scored an average of " + str(accuracy_mean * 100) +
-          "% accuracy with standard deviation of: " + str(accuracy_std * 100) + "%")
-        print()
-
-
-        allophonic_errors = []
-        nex_ls_dfs = []
-
-        for i in range(len(ls_of_dfs)):
-            temp_df = new_ls_dfs[i]
-            errors_df = temp_df[temp_df['correct_allophone'] != temp_df['student_allophone']]
-            #print(errors_df)
-            nex_ls_dfs.append(errors_df)
-
-
-        for j in range(len(nex_ls_dfs)):
-            errors = nex_ls_dfs[j]['student_allophone']
-            errors_ls = list(errors)
-            print(errors_ls)
-
-            #for s in range(len(errors_ls)):
-             #   error = errors_ls[s]
-              #  allophonic_errors.append(error)
-
-        allophonic_errors= np.array(allophonic_errors)
-        return(allophonic_errors)
-
-
-    def extract_from_dictionary(ls_of_dictionaries, key_name):
-        """
-        Iterates through a list of dictionaries and, based on the inserted key name, extracts that data.
-
-        :param: ls_of_dictionaries: a list of dictionaries
-        :param: key_name: a string with ('') that indexes which set of the dictionary you want to extract
-
-        :returns: list with the specified (keyed) datatype
-
-
-        """
-
-        #index = []
-        partic_name = []
-        data_element = []
-
-        for index, dictionary in enumerate(ls_of_dictionaries):
-                data = dictionary[key_name]
-                partic_name = dictionary['partic_number']
-                data_element.append(data)
-
-        return(data_element)
+# THESE BELONG OUTSIDE OF CLASS AND PROBABLY NEED TO BE REWRITTEN COMPLETELY
+
+def filter_by_dictionary(dictionary_df, column_criteria, equivelancy_criteria, ls_of_dfs):
+    """
+    Uses the categorical/meta information from one dataframe (in this case, the dictionary dataframe), and uses some criteria
+    within it to filter another dataframe.
+    Parameters
+    ----------
+        dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
+        column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
+        equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
+        ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
+    Returns
+    --------
+        returns : a list of filtered dataframes
+        rtype : list of pd DataFrames
+    """
+    word_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
+    new_ls_of_dfs = []
+    for i in range(len(ls_of_dfs)):
+        temp_df = ls_of_dfs[i]
+        temp_df = temp_df[temp_df['word_number'].isin(word_selects['list_number'])]
+        new_ls_of_dfs.append(temp_df)
+    return(new_ls_of_dfs)
+def filter_by_dictionary_mult_criteria(dictionary_df, ls_of_dfs, column_criteria0 = '', equivelancy_criteria0 = '', column_criteria1 = '', equivelancy_criteria1 = '', column_criteria2 = '', equivelancy_criteria2 = '', column_criteria3 = '', equivelancy_criteria3 = '', column_criteria4 = '', equivelancy_criteria4 = '', column_criteria5 = '', equivelancy_criteria5 = ''):
+    """
+    Uses the categorical/meta information from one dataframe (in this case, the dictionary dataframe), and uses some criteria
+    within it to filter another dataframe.
+    Parameters
+    ----------
+        dictionary_df : a pandas DataFrame with information relating to how you might want to filter the df
+        column_criteria : a string that is the column name of what you want to filter by in in dictionary_df
+        equivelancy_criteria : what the cells in dictionary_df[column_criteria] are equal to (e.g. 1, False, "<a>", etc.)
+        ls_of_dfs : a list of pandas DataFrames that you want to filter by some criteria
+    Returns
+    --------
+        returns : a list of filtered dataframes
+        rtype : list of pd DataFrames
+    """
+   # Filter the dictionary by the criteria passed as arguments
+    dictionary_ls_dfs = []
+    if len(column_criteria0) > 0:
+        dictionary_df0 = dictionary_df[dictionary_df[column_criteria0] == int(equivelancy_criteria0)]
+        dictionary_ls_dfs.append(dictionary_df0)
+    if len(column_criteria1) > 0:
+        dictionary_df1 = dictionary_df[dictionary_df[column_criteria1] == int(equivelancy_criteria1)]
+        dictionary_ls_dfs.append(dictionary_df1)
+    if len(column_criteria2) > 0:
+        dictionary_df2 = dictionary_df[dictionary_df[column_criteria2] == int(equivelancy_criteria2)]
+        dictionary_ls_dfs.append(dictionary_df2)
+    if len(column_criteria3) > 0:
+        dictionary_df3 = dictionary_df[dictionary_df[column_criteria3] == int(equivelancy_criteria3)]
+        dictionary_ls_dfs.append(dictionary_df3)
+    if len(column_criteria4) > 0:
+        dictionary_df4 = dictionary_df[dictionary_df[column_criteria4] == int(equivelancy_criteria4)]
+        dictionary_ls_dfs.append(dictionary_df4)
+    if len(column_criteria5) > 0:
+        dictionary_df5 = dictionary_df[dictionary_df[column_criteria5] == int(equivelancy_criteria5)]
+        dictionary_ls_dfs.append(dictionary_df5)
+    new_dictionary_df = pd.concat(dictionary_ls_dfs)
+    new_ls_of_dfs =[]
+    for i in range(len(ls_of_dfs)):
+        temp_df = ls_of_dfs[i]
+        temp_df = temp_df[temp_df['prescriptive_pronunciation'].isin(new_dictionary_df['transcription'])]
+        new_ls_of_dfs.append(temp_df)
+    return(new_ls_of_dfs)
+def filter_by_allophone(ls_of_dfs, allophone0  = '', allophone1 = '', allophone2 = '', allophone3 = '', allophone4 = '', allophone5 = ''):
+    """
+    Filter the entire list of dataframes by a specific allophone.
+    Parameters
+    ----------
+    :allophone[x]: the allophone that you want to focus on, e.g. 'a', 'e', etc.
+    :ls_of_dfs: a list of pandas DataFrames that you want to filter by some criteria
+    Returns
+    --------
+    :returns: a list of filtered dataframes
+    :rtype: list of pd DataFrames
+    """
+    new_ls_of_dfs = []
+    for i in range(len(ls_of_dfs)):
+        temp_df = ls_of_dfs[i]
+        temp_df0 = temp_df[temp_df['correct_allophone'] == allophone0]
+        temp_df1 = temp_df[temp_df['correct_allophone'] == allophone1]
+        temp_df2 = temp_df[temp_df['correct_allophone'] == allophone2]
+        temp_df3 = temp_df[temp_df['correct_allophone'] == allophone3]
+        temp_df4 = temp_df[temp_df['correct_allophone'] == allophone4]
+        temp_df5 = temp_df[temp_df['correct_allophone'] == allophone5]
+        temp_ls_dfs = [temp_df0, temp_df1, temp_df2, temp_df3, temp_df4, temp_df5]
+        new_temp_df = pd.concat(temp_ls_dfs)
+                          # == allophone] # right now the code doesn't account for any diphtongs
+        new_ls_of_dfs.append(new_temp_df)
+    return(new_ls_of_dfs)
+def get_proportions(ls_of_dfs):
+    """
+    """
+    ls_of_proportions = []
+    for i in range(len(ls_of_dfs)):
+        temp_df = ls_of_dfs[i]
+        boolean = temp_df['correct_allophone'] == temp_df['student_allophone']
+        denominat = len(boolean)
+        numerat = boolean.sum()
+        proportion = numerat/denominat
+        ls_of_proportions.append(proportion)
+    return(ls_of_proportions)
+def descriptive_stats(ls_of_dfs, allophone):
+    """
+    Returns some basic descriptive statistics about the selected allophone in the input dataframes.
+    """
+    new_ls_dfs = filter_by_allophone(ls_of_dfs, allophone0 = allophone) # because filter_by_allophone changed, there will have to be some corresponding changes
+    # to make sure everything else still runs smoothly
+    allophone_frequency = len(new_ls_dfs[0])
+    print("In this word list, the allophone [" + allophone + "] occured in " + str(allophone_frequency) + " syllables.")
+    accuracy_ls = get_proportions(new_ls_dfs)
+    accuracy_mean = np.mean(accuracy_ls)
+    accuracy_std = np.std(accuracy_ls)
+    print("For this allophone:")
+    print("The particpants scored an average of " + str(accuracy_mean * 100) +
+      "% accuracy with standard deviation of: " + str(accuracy_std * 100) + "%")
+    print()
+    allophonic_errors = []
+    nex_ls_dfs = []
+    for i in range(len(ls_of_dfs)):
+        temp_df = new_ls_dfs[i]
+        errors_df = temp_df[temp_df['correct_allophone'] != temp_df['student_allophone']]
+        #print(errors_df)
+        nex_ls_dfs.append(errors_df)
+    for j in range(len(nex_ls_dfs)):
+        errors = nex_ls_dfs[j]['student_allophone']
+        errors_ls = list(errors)
+        print(errors_ls)
+        #for s in range(len(errors_ls)):
+         #   error = errors_ls[s]
+          #  allophonic_errors.append(error)
+    allophonic_errors= np.array(allophonic_errors)
+    return(allophonic_errors)
+def extract_from_dictionary(ls_of_dictionaries, key_name):
+    """
+    Iterates through a list of dictionaries and, based on the inserted key name, extracts that data.
+    :param: ls_of_dictionaries: a list of dictionaries
+    :param: key_name: a string with ('') that indexes which set of the dictionary you want to extract
+    :returns: list with the specified (keyed) datatype
+    """
+    #index = []
+    partic_name = []
+    data_element = []
+    for index, dictionary in enumerate(ls_of_dictionaries):
+            data = dictionary[key_name]
+            partic_name = dictionary['partic_number']
+            data_element.append(data)
+    return(data_element)
