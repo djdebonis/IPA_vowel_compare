@@ -197,6 +197,10 @@ class Participant:
     @property
     def raw_transcript(self):
         return self.pronunciation_dictionary["raw_transcript"]
+
+    @property
+    def survey_results(self):
+        return self.survey_dictionary
     
 
     def open_and_read(self, infile_path_and_name):
@@ -339,7 +343,7 @@ class Participant:
     def survey_results(self, df):
         """
         """
-        series = df.loc[df["partic_index"] == self.id_number]
+        series = df.loc[df.index == self.id_number]
         survey_dictionary = series.to_dict('list')
         survey_dictionary = {k: v[0] for k, v in survey_dictionary.items()}
         return(survey_dictionary)

@@ -89,7 +89,7 @@ presc_folder_path = transcription_folder + "/" + prescriptive_transcript_folder 
 
 # st.write()
 
-survey_data_raw = pd.read_csv("survey_data.csv") # import the data from the survey
+survey_data_raw = pd.read_csv("survey_data/survey_data.csv") # import the data from the survey
 survey_data = partic_number(survey_data_raw)
 
 desc_transcript_files = glob.glob(desc_folder_path + '*.txt') # take in all desc filepaths
@@ -106,12 +106,14 @@ data_explore_keys = ["View participant data", "View descriptive statistics"]
 
 data_explore = st.selectbox("What information would you like to look at?", data_explore_keys)
 
-if data_explore == data_explore_keys[0]:
+# if data_explore == data_explore_keys[0]:
     
 with st.sidebar:
     left_tag = st.selectbox("Chose Data", participant_data, index=0)
-    
-st.write(left_tag[1])
+    st.write(type(data_explore[0]))
+    # participant_id = data_explore[0]
+    # st.write("Participant ID: " + str(participant_id))
+    # st.write(participant_data[data_explore])
 
 
 
