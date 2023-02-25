@@ -52,7 +52,7 @@ Factor 1: Años de la instrucción formal
 
 Una regresión lineal estaba equipado para demostrar el patrón de la adquisición de la producción de las vocales como un función de años de instrucción formal. Según este patrón (según estos datos poquitos),  un estudiante comenzaría con ~75.5% exactitud en la producción de las vocales, y entonces mejoraría por ~0.8% por cada año de la instrucción; es absolutamente claro que este estadistica no es el patrón real. Los datos de esta función están dibujado abajo, en Figura 1: 
 
-[![regression](../../vowel_accuracy_formal_lang_instruct.png)]
+[![regression](../vowel_accuracy_formal_lang_instruct.png)]
 
 Si esta figura está examinando, esta parecido que es posible que la función sea más cuadrática; i.e. el patrón de la adquisición de la producción de las vocales comenzaría más bajo, crecería rápidamente, y entonces ralentizará en los años altos. 
 
