@@ -1,5 +1,5 @@
 # IPA_vowel_compare
-> Jupyter notebook & streamlit app running Python code for comparative analysis of International Phonetic Alphabet (IPA) strings. Repository also includes data and research from a Spanish phonetic acquisition project currently underway.
+> Streamlit app running Python code for comparative analysis of International Phonetic Alphabet (IPA) strings. App is constructed to streamline data exploration whilst deciding what directions to take in research. Repository also includes data and research from a Spanish phonetic acquisition pilot study from 2020.
 
 ## Table of contents
 [IPA_vowel_compare](#ipa_vowel_compare)
@@ -28,13 +28,10 @@ The bulk of the data collected is in the [transcriptions/descriptive/](/transcri
 
 There are also two .csv files in the root directory: [dictionary.csv](dictionary.csv), and [survey_data.csv](survey_data.csv). The former contains meta-information about the word-list sample and its linguistic properties, while the latter has responses to the survey that participants took before recording their pronunciation. Note that many the functions are designed specifically for these datasets.
 
-### Notebook
 
-Currently the notebook has been put by-the-wayside to emphasize the Streamlit app. Both the notebook and the app share many similar features, but in the notebook you see the code as you go, whereas in the app you have more opportunity for data exploration.
+### Module, Functions
 
-### Module & functions
-
-As of right now, all of the functions have been thrown into [Compare_IPA.py](Compare_IPA.py); there are also no class divisions ATM.
+Find classes & functions in [Compare_IPA.py](Compare_IPA.py).
 
 ### Streamlit web App
 
@@ -42,7 +39,7 @@ The streamlit app was designed for users to explore data (and the relationships 
 
 ## Study
 
-The study that accompanies the code in this repo was conducted as a final project for Spanish Applied Linguistics: Second Language Acquisition, a course @ The University of Colorado, Denver, taught by my professor & research advisor, Dr. Alyssa Martoccio. Read more about the study [here](README_ext/study.md).
+The study that accompanies the code in this repo was conducted as a final project for Spanish Applied Linguistics: Second Language Acquisition, a course @ The University of Colorado, Denver, taught by my professor & research advisor, Dr. Alyssa Martoccio. Read more about the study [here](materials/study.md).
 
 ## Installation
 
@@ -57,16 +54,6 @@ pip install .
 ### Streamlit web app
 ```bash
 streamlit run app.py
-```
-
-### Notebook
-Editing and interacting with the notebook requires Jupyter. I personally use Jupyter Lab. For installation options, [view their docs](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html)
-```bash
-jupyter lab
-```
-or
-```bash
-jupyter notebook
 ```
 
 ## Credit
