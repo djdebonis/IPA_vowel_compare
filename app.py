@@ -23,7 +23,7 @@ def grab_number(string) -> int:
     
     return(num)
 
-def partic_number(survey_data):
+def participant_number(survey_data):
     """
     """
     
@@ -79,10 +79,10 @@ prescriptive_transcript_folder = 'prescriptive'
 st.write('By default your prescriptive transcription is in `%s`' % transcription_folder, '/`%s`' % prescriptive_transcript_folder, '/')
 st.write('By default your descriptive transcriptions are in `%s`' % transcription_folder, '/`%s`' % descriptive_transcript_folder, '/')
 
-#correct = is_this_correct(key = 1)
-#if correct:
-desc_folder_path = transcription_folder + "/" + descriptive_transcript_folder + "/"
-presc_folder_path = transcription_folder + "/" + prescriptive_transcript_folder + "/"
+correct = is_this_correct(key = 1)
+if correct:
+    desc_folder_path = transcription_folder + "/" + descriptive_transcript_folder + "/"
+    presc_folder_path = transcription_folder + "/" + prescriptive_transcript_folder + "/"
 
 #else:
     #st.write("Please alter your information.")
@@ -90,7 +90,9 @@ presc_folder_path = transcription_folder + "/" + prescriptive_transcript_folder 
 # st.write()
 
 survey_data_raw = pd.read_csv("survey_data/survey_data.csv") # import the data from the survey
-survey_data = partic_number(survey_data_raw)
+survey_data = participant_number(survey_data_raw)
+# remove
+# survey_data = 
 
 desc_transcript_files = glob.glob(desc_folder_path + '*.txt') # take in all desc filepaths
 presc_transcript_file = glob.glob(presc_folder_path + '*.txt') # take in presc transcription file
@@ -99,21 +101,35 @@ presc_dictionary_ls = ipa.bring_in_data(presc_transcript_file)
 presc_dictionary = presc_dictionary_ls[0]
 prescriptive_transcription = presc_dictionary["clean_transcript"]
 
+# create a list of type Participant to store all of the data
 participant_classes = [ipa.Participant(file, survey_data, prescriptive_transcription) for file in desc_transcript_files]
-participant_data = [(i, e.pronunciation_dataframe) for i,e in enumerate(participant_classes)]
 
+
+# create an ids list to make it easier to access participants by their id number
+participant_ids = [partic.id_number for partic in participant_classes]
+
+# create dict for ease of access
+participant_data = dict(zip(participant_ids, participant_classes))
+
+# give user options of what they can do
 data_explore_keys = ["View participant data", "View descriptive statistics"]
-
 data_explore = st.selectbox("What information would you like to look at?", data_explore_keys)
 
-# if data_explore == data_explore_keys[0]:
+# if the user wants to explore participant data
+if data_explore == data_explore_keys[0]:
+    partic_explore = st.selectbox("Select a participant:", participant_data)
+    # show pronuncaiton
+    st.write("Participant ID Number:")
+    st.write(participant_data[partic_explore].id_number)
+    st.write("Participant IPA Transcript")
+    st.write(participant_data[partic_explore].raw_transcript)
+    st.write("Participant Pronunciation Results (compared to prescriptive)")
+    st.write(participant_data[partic_explore].pronunciation_df)
+    st.write("Participant Survey Results")
+    st.write(participant_data[partic_explore].survey_dict)
+   
     
-with st.sidebar:
-    left_tag = st.selectbox("Chose Data", participant_data, index=0)
-    st.write(type(data_explore[0]))
-    # participant_id = data_explore[0]
-    # st.write("Participant ID: " + str(participant_id))
-    # st.write(participant_data[data_explore])
+
 
 
 

@@ -143,6 +143,14 @@ def bring_in_data(ls_of_file_paths):
 
     return(ls_of_dictionaries)
 
+def participant_number_index(df, column_name = "partic_number"):
+    """
+    Grabs participant number from string and creates new index that attributes
+    """
+    df["participant_number"] = df[column_name].str[-2:].astype(int)
+    df.set_index("participant_number", inplace=True)
+    return df
+
 
 class Participant:
     """
@@ -185,8 +193,10 @@ class Participant:
         self.file_info = self.file_finder(_filename)
         
         self.id = self.file_info["file_name"]
+
+        _survey_df = self.participant_number_index(_survey_df)
         
-        self.survey_dictionary = self.survey_results(_survey_df)
+        self.survey_dictionary = self.grab_survey_results(_survey_df)
         
         self.pronunciation_dataframe = self.string_list_phoneme_compare(self.pronunciation_dictionary["clean_transcript"],_prescriptive_pronunciation)
 
@@ -199,8 +209,11 @@ class Participant:
         return self.pronunciation_dictionary["raw_transcript"]
 
     @property
-    def survey_results(self):
+    def survey_dict(self):
         return self.survey_dictionary
+    @property
+    def pronunciation_df(self):
+        return(self.pronunciation_dataframe)
     
 
     def open_and_read(self, infile_path_and_name):
@@ -340,7 +353,7 @@ class Participant:
 
         return(dictionary)
     
-    def survey_results(self, df):
+    def grab_survey_results(self, df):
         """
         """
         series = df.loc[df.index == self.id_number]
@@ -368,6 +381,11 @@ class Participant:
         dictionary['clean_transcript'] = temp_partic
 
         return(dictionary)
+
+    def participant_number_index(self, df, column_name = "partic_number"): 
+        df["participant_number"] = df[column_name].str[-2:].astype(int)
+        df.set_index("participant_number", inplace=True)
+        return df
 
 
     def vowel_lists_append(self, prescrip_string, descrip_string, prescrip_vowel_ls, descrip_vowel_ls):
