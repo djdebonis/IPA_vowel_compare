@@ -118,15 +118,58 @@ data_explore = st.selectbox("What information would you like to look at?", data_
 # if the user wants to explore participant data
 if data_explore == data_explore_keys[0]:
     partic_explore = st.selectbox("Select a participant:", participant_data)
+    _participant = participant_data[partic_explore]
     # show pronuncaiton
     st.write("Participant ID Number:")
-    st.write(participant_data[partic_explore].id_number)
+    st.write(_participant.id_number)
     st.write("Participant IPA Transcript")
-    st.write(participant_data[partic_explore].raw_transcript)
+    st.write(_participant.raw_transcript)
     st.write("Participant Pronunciation Results (compared to prescriptive)")
-    st.write(participant_data[partic_explore].pronunciation_df)
+    st.write(_participant.pronunciation_df)
     st.write("Participant Survey Results")
-    st.write(participant_data[partic_explore].survey_dict)
+    st.write(_participant.survey_dict)
+
+# if the user wants to view descriptive statistics
+if data_explore == data_explore_keys[1]:
+    by_participant_study = ["By participant", "Entire Study"]
+    select = st.selectbox("""Would you like to see data by individual participant, or by the entire study?""", by_participant_study)
+
+    # if they want to see individual participants
+    if select == by_participant_study[0]:
+        partic_explore = st.selectbox("Select a participant to see stats:", participant_data)
+        _participant = participant_data[partic_explore]
+        
+        stat_types = ["Pronunciation Proportions"]
+        stat_select = st.selectbox("Select type of statistic:", stat_types)
+        
+        if stat_select == stat_types[0]:
+            by_vowel = ['all','a', 'e', 'i', 'o', 'u']
+            vowel_select = st.selectbox("Select a vowel:", by_vowel)
+            
+            if vowel_select == by_vowel[0]:
+                pronunciation_df = _participant.pronunciation_df
+                total_vowels = len(pronunciation_df)
+                correct_vowels = len(pronunciation_df[pronunciation_df["correct_allophone"] == pronunciation_df["student_allophone"]])
+                proportion_correct = correct_vowels/total_vowels
+                st.write("Proportion of correct vowels: {}%".format(round(proportion_correct * 100, 2)))
+                
+                
+        
+        
+
+    # if they want to see the whole study
+    if select == by_participant_study[1]:
+        stat_types = ["Pronunciation Proportions"]
+        stat_select = st.selectbox("Select type of statistic:", stat_types)
+        
+        
+            
+        
+        
+            
+        
+
+
    
     
 
@@ -218,279 +261,3 @@ if data_explore == data_explore_keys[0]:
 #             for i, key in enumerate(list(survey_data.keys())):
 #                 question_keys.append(key)
 #                 question_answers.append(dictionary[key])
-
-
-#             # st.selectbox("Please select the question: ", questions)
-#             partic_survey_results = pd.DataFrame(zip(question_keys, questions, question_answers), columns = ['question_key', 'questions', 'answer'])
-#             st.table(partic_survey_results)
-
-            
-#             st.write("## Total Results")
-#             st.write("### Filter results by:")
-            
-#             st.write("**Phoneme criteria:**")
-#             dict = dictionary['DF']
-#             trick_ls = [dict]
-            
-#             allophone0_bool = st.checkbox('/a/')
-#             if allophone0_bool:
-#                 allophone0 = 'a'
-#             else:
-#                 allophone0 = ''
-#             allophone1_bool = st.checkbox('/e/')
-#             if allophone1_bool:
-#                 allophone1 = 'e'
-#             else:
-#                 allophone1 = ''
-
-#             allophone2_bool = st.checkbox('/i/')
-#             if allophone2_bool:
-#                 allophone2 = 'i'
-#             else:
-#                 allophone2 = ''
-
-#             allophone3_bool = st.checkbox('/o/')
-#             if allophone3_bool:
-#                 allophone3 = 'o'
-#             else:
-#                 allophone3 = ''
-
-#             allophone4_bool = st.checkbox('/u/')
-#             if allophone4_bool:
-#                 allophone4 = 'u'
-#             else:
-#                 allophone4 = ''
-
-#             filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
-#             allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-            
-#             st.write("**Dictionary criteria:**")
-            
-#             cognate_bool = st.checkbox('Cognates')
-#             if cognate_bool:
-#                 column_criteria0 = 'cognate'
-#                 equivelancy_criteria0 = '1'
-#             else:
-#                 column_criteria0 = ''
-#                 equivelancy_criteria0 = ''
-            
-#             noncognate_bool = st.checkbox('Non-cognates')
-#             if noncognate_bool:
-#                 column_criteria1 = ''
-#                 equivelancy_criteria1 = '0'
-#             else:
-#                 column_criteria1 = ''
-#                 equivelancy_criteria1 = ''
-            
-#             term_vowel_bool = st.checkbox('Terminal vowels')
-#             if term_vowel_bool:
-#                 column_criteria2 = 'term_vowel'
-#                 equivelancy_criteria2 = '1'
-#             else:
-#                 column_criteria2 = ''
-#                 equivelancy_criteria2 = ''
-#             non_term_vowel_bool = st.checkbox("Non-terminal vowels")
-            
-#             if non_term_vowel_bool:
-#                 column_criteria3 = 'term_vowel'
-#                 equivelancy_criteria3 = '0'
-#             else:
-#                 column_criteria3 = ''
-#                 equivelancy_criteria3 = ''
-                
-#             init_vowel_bool = st.checkbox("Vowel initial")
-#             if init_vowel_bool:
-#                 column_criteria4 = 'term_vowel'
-#                 equivelancy_criteria4 = '1'
-#             else:
-#                 column_criteria4 = ''
-#                 equivelancy_criteria4 = ''
-                
-#             non_init_vowel_bool = st.checkbox("Non-vowel initial")
-#             if init_vowel_bool:
-#                 column_criteria5 = 'term_vowel'
-#                 equivelancy_criteria5 = '0'
-#             else:
-#                 column_criteria5 = ''
-#                 equivelancy_criteria5 = ''
-        
-#             filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
-    
-#             st.write(filtered_by_dict[0])
-#             st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
-            
-            
-
-
-# elif data_explore == data_explore_keys[2]:
-
-
-#     descriptive_stats_options = ["Nothing","The wordlist", "Survey results", "Pronunciation outcomes"]
-
-#     descriptive_stats_choice = st.selectbox("Chose what stats you would like to explore", descriptive_stats_options)
-
-#     if descriptive_stats_choice == descriptive_stats_options[1]:
-#         st.write(word_data.keys())
-
-#         words = word_data['word']
-#         word_size = len(words)
-
-#         def filter_dict(dictionary_df, column_criteria, equivelancy_criteria):
-#             row_selects = dictionary_df[dictionary_df[column_criteria] == equivelancy_criteria]
-#             words = row_selects['word']
-#             return(words)
-
-#         terminal_vowels = filter_dict(word_data, 'term_vowel', 1)
-#         terminal_vowel_prop = len(terminal_vowels) / word_size
-
-#         init_vowels = filter_dict(word_data, 'init_vowel', 1)
-#         init_vowels_prop = len(init_vowels) / word_size
-#         cognates = filter_dict(word_data, 'cognate', 1)
-
-#         ls_types = ['initial letter', 'terminal letter', 'cognate status', 'initial letter', 'terminal letter', 'cognate status']
-
-
-#         alt.Chart(word_data).mark_text(filled=True).encode(
-#             alt.X('term_vowel:O', axis=None),
-#             alt.Y('animal:O', axis=None),
-#             alt.Row('country:N', header=alt.Header(title='')),
-#             alt.SizeValue(60),
-#             text='emoji'
-#         ).properties(width=800, height=200)
-
-#         # https://vega.github.io/vega-lite/examples/isotype_bar_chart_emoji.html
-
-
-#     elif descriptive_stats_choice == descriptive_stats_options[3]:
-#         # write information on total dataset
-#         total_accuracy = ipa.get_proportions(study_data)
-#         total_accuracy_mean = np.mean(total_accuracy)
-#         total_accuracy_std = np.std(total_accuracy)
-#         st.write("### All participants")
-#         st.write("Across all of the sample, the particpants scored an average of " + str(round((total_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((total_accuracy_std * 100), 2)) + "%")
-#         # time.sleep()
-
-#         # write information on cognates
-#         non_cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 0, study_data)
-#         non_cognate_accuracy = ipa.get_proportions(non_cognate_dfs)
-#         non_cognate_accuracy_mean = np.mean(non_cognate_accuracy)
-#         non_cognate_accuracy_std = np.std(non_cognate_accuracy)
-#         st.write("For non-cognates words, the particpants scored an average of " + str(round((non_cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((non_cognate_accuracy_std * 100), 2)) + "%")
-
-#     # calculate mean and std for cognate pronunciation accuracy across the *entrie* sample
-#         cognate_dfs = ipa.filter_by_dictionary(word_data, "cognate", 1, study_data) # create a list of dfs that only accounts for the cognates in the study
-#         cognate_accuracy = ipa.get_proportions(cognate_dfs)
-#         cognate_accuracy_mean = np.mean(cognate_accuracy)
-#         cognate_accuracy_std = np.std(cognate_accuracy)
-#         st.write("For cognates, the particpants scored an average of " + str(round((cognate_accuracy_mean * 100), 2)) + "% vowel pronunciation accuracy with a standard deviation of: " + str(round((cognate_accuracy_std * 100), 2)) + "%")
-
-
-#         stat = stat.ttest_ind(cognate_accuracy, non_cognate_accuracy, equal_var=False)
-#         pvalue = stat[1]
-
-#         st.write("According to a two sample t-test (p < 0.05, equal varience = False):")
-
-#         if pvalue >= 0.05:
-#             st.markdown("> We fail to reject the null hypothesis. There is not enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
-#         else:
-#             st.markdown("> We choose to reject the null hypothesis. There is enough evidence (p = " + str(pvalue) + ") to support a statistically significant difference of the average pronunciation accuarcy between cognates and non-cognaates in the sample.")
-
-
-
-
-#         st.write("## Total Results")
-#         st.write("**Phoneme criteria:**")
-#         dict = dictionary['DF']
-#         trick_ls = [dict]
-        
-#         allophone0_bool = st.checkbox('/a/')
-#         if allophone0_bool:
-#             allophone0 = 'a'
-#         else:
-#             allophone0 = ''
-#         allophone1_bool = st.checkbox('/e/')
-#         if allophone1_bool:
-#             allophone1 = 'e'
-#         else:
-#             allophone1 = ''
-#         allophone2_bool = st.checkbox('/i/')
-#         if allophone2_bool:
-#             allophone2 = 'i'
-#         else:
-#             allophone2 = ''
-#         allophone3_bool = st.checkbox('/o/')
-#         if allophone3_bool:
-#             allophone3 = 'o'
-#         else:
-#             allophone3 = ''
-#         allophone4_bool = st.checkbox('/u/')
-#         if allophone4_bool:
-#             allophone4 = 'u'
-#         else:
-#             allophone4 = ''
-#         filtered_by_allophone = ipa.filter_by_allophone(trick_ls, allophone0 = allophone0, allophone1 = allophone1,
-#         allophone2 = allophone2, allophone3 = allophone3, allophone4 = allophone4)
-        
-#         st.write("**Dictionary criteria:**")
-        
-#         cognate_bool = st.checkbox('Cognates')
-#         if cognate_bool:
-#             column_criteria0 = 'cognate'
-#             equivelancy_criteria0 = '1'
-#         else:
-#             column_criteria0 = ''
-#             equivelancy_criteria0 = ''
-        
-#         noncognate_bool = st.checkbox('Non-cognates')
-#         if noncognate_bool:
-#             column_criteria1 = ''
-#             equivelancy_criteria1 = '0'
-#         else:
-#             column_criteria1 = ''
-#             equivelancy_criteria1 = ''
-        
-#         term_vowel_bool = st.checkbox('Terminal vowels')
-#         if term_vowel_bool:
-#             column_criteria2 = 'term_vowel'
-#             equivelancy_criteria2 = '1'
-#         else:
-#             column_criteria2 = ''
-#             equivelancy_criteria2 = ''
-            
-#         non_term_vowel_bool = st.checkbox("Non-terminal vowels")
-#         if non_term_vowel_bool:
-#             column_criteria3 = 'term_vowel'
-#             equivelancy_criteria3 = '0'
-#         else:
-#             column_criteria3 = ''
-#             equivelancy_criteria3 = ''
-            
-#         init_vowel_bool = st.checkbox("Vowel initial")
-#         if init_vowel_bool:
-#             column_criteria4 = 'term_vowel'
-#             equivelancy_criteria4 = '1'
-#         else:
-#             column_criteria4 = ''
-#             equivelancy_criteria4 = ''
-            
-#         non_init_vowel_bool = st.checkbox("Non-vowel initial")
-#         if init_vowel_bool:
-#             column_criteria5 = 'term_vowel'
-#             equivelancy_criteria5 = '0'
-#         else:
-#             column_criteria5 = ''
-#             equivelancy_criteria5 = ''
-    
-#         filtered_by_dict = ipa.filter_by_dictionary_mult_criteria(word_data, filtered_by_allophone, column_criteria0 = column_criteria0, equivelancy_criteria0 = equivelancy_criteria0, column_criteria1 = column_criteria1, equivelancy_criteria1 = equivelancy_criteria1, column_criteria2 = column_criteria2, equivelancy_criteria2 = equivelancy_criteria2, column_criteria3 = column_criteria3, equivelancy_criteria3 = equivelancy_criteria3, column_criteria4 = column_criteria4, equivelancy_criteria4 = equivelancy_criteria4, column_criteria5 = column_criteria5, equivelancy_criteria5 = equivelancy_criteria5)
-        
-
-#         st.write(filtered_by_dict[0])
-#         st.write("[note] if you want to view data filtering for *only* phoneme criteria or *only* dictionary criteria, select all boxes in the opposite criteria.")
-            
-
-# #st.write("Files in " + desc_folder_path + ": ")
-# #for i,e in enumerate(desc_transcript_files):
-#  #   st.write(e)
-
-# #st.write("Files in " + presc_folder_path + ": ")
-# #st.write(presc_transcript_file)
