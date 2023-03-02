@@ -145,14 +145,19 @@ if data_explore == data_explore_keys[1]:
         if stat_select == stat_types[0]:
             by_vowel = ['all','a', 'e', 'i', 'o', 'u']
             vowel_select = st.selectbox("Select a vowel:", by_vowel)
+            pronunciation_df = _participant.pronunciation_df
             
-            if vowel_select == by_vowel[0]:
-                pronunciation_df = _participant.pronunciation_df
-                total_vowels = len(pronunciation_df)
-                correct_vowels = len(pronunciation_df[pronunciation_df["correct_allophone"] == pronunciation_df["student_allophone"]])
-                proportion_correct = correct_vowels/total_vowels
-                st.write("Proportion of correct vowels: {}%".format(round(proportion_correct * 100, 2)))
+            if vowel_select != 'all':
+                filtered = pronunciation_df[pronunciation_df["correct_allophone"] == vowel_select]
+            else:
+                filtered = pronunciation_df
                 
+            total_vowels = len(filtered)
+            correct_vowels = len(filtered[filtered["correct_allophone"] == filtered["student_allophone"]])
+            proportion_correct = correct_vowels/total_vowels
+            st.write("Proportion of correct vowels: {}%".format(round(proportion_correct * 100, 2)))
+
+          
                 
         
         
