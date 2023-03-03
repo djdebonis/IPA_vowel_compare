@@ -2,7 +2,5 @@ pandas
 numpy
 matplotlib
 scipy
-os
 streamlit
-glob
 altair
