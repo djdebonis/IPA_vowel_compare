@@ -18,7 +18,7 @@
 
 ## Repository
 
-The intention of this repo is to perform contrastive data analysis between prescriptive and descriptive IPA strings. (Don't know anything about IPA? Learn more [here](README_ext/IPA.md).) 
+The intention of this repo is to perform contrastive data analysis between prescriptive and descriptive IPA strings. 
 
 ### Data
 
